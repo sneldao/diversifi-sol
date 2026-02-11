@@ -1,0 +1,99 @@
+{
+  "name": "DiversiFi Data",
+  "version": "1.0.0",
+  "description": "World Bank economic indicators combined with Allium on-chain data for wealth protection analysis",
+  "author": "DiversiFi",
+  "repository": "https://github.com/sneldao/diversifi-data-skill",
+  "license": "MIT",
+  "keywords": [
+    "wealth-protection",
+    "portfolio-analysis",
+    "economic-indicators",
+    "on-chain-data",
+    "world-bank",
+    "allium",
+    "solana"
+  ],
+  "capabilities": {
+    "data_sources": {
+      "world_bank": {
+        "description": "World Bank economic indicators including GDP deflator, inflation, and governance scores",
+        "endpoints": ["https://api.worldbank.org/v2"]
+      },
+      "allium": {
+        "description": "On-chain data for Solana including ETH/BTC prices and token metrics",
+        "endpoints": ["https://api.allium.so"]
+      }
+    },
+    "analysis_types": [
+      "macro-economic-context",
+      "portfolio-health",
+      "yield-optimization",
+      "risk-assessment",
+      "wealth-protection"
+    ]
+  },
+  "functions": {
+    "get_us_inflation": {
+      "description": "Get US inflation data from World Bank GDP deflator",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "description": "Year for inflation data (default: current year)"
+          }
+        }
+      }
+    },
+    "get_stock_quotes": {
+      "description": "Get stock quotes from Yahoo Finance",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "symbols": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Stock ticker symbols"
+          }
+        }
+      }
+    },
+    "get_governance_scores": {
+      "description": "Get governance scores from World Bank",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "country": {
+            "type": "string",
+            "description": "Country code for governance data"
+          }
+        }
+      }
+    },
+    "get_crypto_prices": {
+      "description": "Get ETH/BTC prices from Allium on-chain data",
+      "parameters": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  },
+  "manifest": {
+    "skill_url": "https://diversifi-sol.vercel.app/.well-known/skill.json",
+    "icon_url": "https://diversifi-sol.vercel.app/shield-icon.png",
+    "author": {
+      "name": "DiversiFi",
+      "url": "https://diversifi-sol.vercel.app"
+    }
+  },
+  "agent_compatibility": {
+    "minimum_version": "1.0.0",
+    "features": [
+      "real-time-data",
+      "portfolio-monitoring",
+      "yield-optimization",
+      "risk-alerts"
+    ]
+  }
+}

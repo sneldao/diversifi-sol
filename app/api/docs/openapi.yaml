@@ -1,0 +1,216 @@
+openapi: 3.0.0
+info:
+  title: DiversiFi API
+  description: API for autonomous portfolio guardian and DeFi yield optimization
+  version: 1.0.0
+  contact:
+    name: DiversiFi Team
+    url: https://diversifi-sol.vercel.app
+
+servers:
+  - url: https://diversifi-sol.vercel.app/api
+    description: Production
+  - url: http://localhost:3000/api
+    description: Local development
+
+paths:
+  /portfolio:
+    get:
+      summary: Get portfolio data
+      description: Retrieves token holdings and portfolio value for a wallet
+      parameters:
+        - in: query
+          name: wallet
+          required: true
+          schema:
+            type: string
+            example: "7nYhF9..."
+          description: Solana wallet address
+      responses:
+        '200':
+          description: Portfolio data retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PortfolioResponse'
+        '400':
+          description: Invalid wallet address
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /yields:
+    get:
+      summary: Get yield opportunities
+      description: Retrieves available DeFi yield opportunities across protocols
+      responses:
+        '200':
+          description: Yield opportunities retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  opportunities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/YieldOpportunity'
+
+  /health:
+    get:
+      summary: Get portfolio health score
+      description: Calculates risk score and health metrics for a portfolio
+      parameters:
+        - in: query
+          name: wallet
+          required: true
+          schema:
+            type: string
+          description: Solana wallet address
+      responses:
+        '200':
+          description: Health metrics calculated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+  /guardian/register:
+    post:
+      summary: Register a new guardian
+      description: Registers a portfolio guardian for a wallet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - walletAddress
+              properties:
+                walletAddress:
+                  type: string
+                  example: "7nYhF9..."
+      responses:
+        '200':
+          description: Guardian registered
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  guardianId:
+                    type: string
+                    example: "GRD-7NYHF9..."
+                  deployedAt:
+                    type: string
+                    format: date-time
+
+components:
+  schemas:
+    PortfolioResponse:
+      type: object
+      properties:
+        totalValue:
+          type: number
+          example: 12458.92
+        tokens:
+          type: array
+          items:
+            $ref: '#/components/schemas/Token'
+        chainBreakdown:
+          type: object
+          additionalProperties:
+            type: number
+          example:
+            Solana: 12458.92
+        lastUpdated:
+          type: string
+          format: date-time
+
+    Token:
+      type: object
+      properties:
+        mint:
+          type: string
+          example: "EPjFWdd5..."
+        symbol:
+          type: string
+          example: "USDC"
+        name:
+          type: string
+          example: "USD Coin"
+        balance:
+          type: number
+          example: 5234.56
+        price:
+          type: number
+          example: 1.0
+        value:
+          type: number
+          example: 5234.56
+
+    YieldOpportunity:
+      type: object
+      properties:
+        protocol:
+          type: string
+          example: "Kamino"
+        token:
+          type: string
+          example: "USDC"
+        apy:
+          type: number
+          example: 8.5
+        tvl:
+          type: number
+          example: 45000000
+        risk:
+          type: string
+          enum: [low, medium, high]
+        chain:
+          type: string
+          example: "Solana"
+
+    HealthResponse:
+      type: object
+      properties:
+        score:
+          type: integer
+          minimum: 0
+          maximum: 100
+          example: 72
+        diversificationScore:
+          type: integer
+          example: 65
+        liquidityScore:
+          type: integer
+          example: 80
+        concentrationScore:
+          type: integer
+          example: 45
+        insights:
+          type: array
+          items:
+            type: string
+            example: "Good diversification, but room for improvement"
+        lastUpdated:
+          type: string
+          format: date-time
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Invalid wallet address"
+        status:
+          type: integer
+          example: 400

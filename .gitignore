@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+
+# Build
+.next/
+out/
+
+# Testing
+coverage/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment
+.env*
+!.env.example
+.vercel
+
+# Agent-specific scripts (keep private)
+scripts/
+lib/x402.ts
+lib/skill.ts
+
