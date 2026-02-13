@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { TrendingUp, TrendingDown, Zap, RefreshCw } from 'lucide-react';
+import { useWallet, WalletContextState } from '@solana/wallet-adapter-react';
 
 interface TokenPrice {
   symbol: string;
@@ -9,29 +10,26 @@ interface TokenPrice {
   value: number;
 }
 
-interface PriceTickerProps {
-  walletAddress: string | null;
-}
-
-export function PriceTicker({ walletAddress }: PriceTickerProps) {
+export function PriceTicker() {
+  const { publicKey, connected } = useWallet() as WalletContextState & { connected: boolean };
   const [prices, setPrices] = useState<TokenPrice[]>([]);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const fetchPrices = async () => {
-    if (!walletAddress) return;
+    if (!publicKey) return;
     
     setIsLoading(true);
     setError(null);
     
     try {
+      const walletAddress = publicKey.toString();
       const res = await fetch(`/api/portfolio?wallet=${walletAddress}`);
       if (!res.ok) throw new Error('Failed to fetch prices');
       
       const data = await res.json();
       if (data.success && data.data?.tokens) {
-        // Get top tokens by value
         const tokens = data.data.tokens
           .sort((a: { value: number }, b: { value: number }) => b.value - a.value)
           .slice(0, 6)
@@ -52,18 +50,17 @@ export function PriceTicker({ walletAddress }: PriceTickerProps) {
   };
 
   useEffect(() => {
-    if (walletAddress) {
+    if (connected && publicKey) {
       fetchPrices();
     }
-  }, [walletAddress]);
+  }, [connected, publicKey]);
 
-  // Auto-refresh every 30 seconds
   useEffect(() => {
-    if (!walletAddress) return;
+    if (!connected || !publicKey) return;
     
     const interval = setInterval(fetchPrices, 30000);
     return () => clearInterval(interval);
-  }, [walletAddress]);
+  }, [connected, publicKey]);
 
   const formatPrice = (price: number) => {
     if (price >= 1000) {
@@ -76,7 +73,7 @@ export function PriceTicker({ walletAddress }: PriceTickerProps) {
     return `$${price.toExponential(4)}`;
   };
 
-  if (!walletAddress) {
+  if (!connected) {
     return (
       <div className="w-full py-2 px-4 bg-slate-900/40 border-y border-emerald-500/10">
         <div className="flex items-center gap-2 text-sm text-slate-500">
@@ -120,7 +117,7 @@ export function PriceTicker({ walletAddress }: PriceTickerProps) {
             </div>
           </>
         ) : (
-          <div className="text-xs text-slate-500">No tokens found</div>
+          <div className="text-xs text-slate-500">Loading prices...</div>
         )}
       </div>
     </div>

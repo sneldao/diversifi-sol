@@ -4,6 +4,7 @@ import './globals.css';
 import '@solana/wallet-adapter-react-ui/styles.css';
 import { SolanaWalletProvider } from './components/WalletProvider';
 import { NavWalletButton } from './components/NavWalletButton';
+import { PriceTicker } from './components/PriceTicker';
 
 const inter = Inter({ subsets: ['latin'], display: 'swap' });
 
@@ -81,6 +82,7 @@ export default function RootLayout({
                 </div>
               </div>
             </nav>
+            <PriceTicker />
             <main className="pt-20 pb-8 px-4 sm:px-6 lg:px-8">
               <div className="max-w-7xl mx-auto">
                 {children}
