@@ -9,6 +9,7 @@ import { DashboardSkeleton } from './Skeletons';
 import { RiskAssessment } from './RiskAssessment';
 import { GuardianActionLog } from './GuardianActionLog';
 import { YieldOpportunities } from './YieldOpportunities';
+import { RebalancingPanel } from './RebalancingPanel';
 import {
   Chart as ChartJS,
   ArcElement,
