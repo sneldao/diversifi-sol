@@ -78,7 +78,7 @@ export async function getPortfolio(walletAddress: string): Promise<{
     
     const tokens: HeliusToken[] = rawTokens.map((token: { mint: string; symbol?: string; name?: string; balance: number }) => {
       const rwaInfo = RWA_TOKENS[token.mint] || 
-        rawTokens.find((t: { mint: string; symbol: string }) => t.mint === mint && (t.symbol === 'bSOL' || t.symbol === 'ONDO' || t.symbol === 'MP1'));
+        rawTokens.find((t: { mint: string; symbol: string }) => t.mint === token.mint && (t.symbol === 'bSOL' || t.symbol === 'ONDO' || t.symbol === 'MP1'));
 
       return {
         mint: token.mint,
