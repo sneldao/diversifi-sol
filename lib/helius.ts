@@ -10,10 +10,8 @@ interface HeliusToken {
   category: string;
 }
 
-// Get Helius API key from environment
 const HELIUS_API_KEY = process.env.HELIUS_API_KEY;
 
-// Build proper Helius RPC URL (API key as query param)
 const getHeliusUrl = (path: string) => {
   if (!HELIUS_API_KEY) {
     return null;
@@ -21,7 +19,6 @@ const getHeliusUrl = (path: string) => {
   return `https://api.helius.xyz/v0${path}?api-key=${HELIUS_API_KEY}`;
 };
 
-// RWA token definitions
 const RWA_TOKENS: Record<string, { symbol: string; name: string; category: string }> = {
   'bSo13r1T4sSxyB1z9Ts6Z7J6K4q5Zr8Z6y5x4w3v2u1t0': { symbol: 'bSOL', name: 'Backed SOL', category: 'U.S. Treasuries' },
   'onkEn4i2B1D3Uq8Q7m8qZ5y4x3w2v1u0t9s8r7p6o5n4m': { symbol: 'ONDO', name: 'Ondo USD Yield', category: 'U.S. Treasuries' },
@@ -34,7 +31,6 @@ export async function getPortfolio(walletAddress: string): Promise<{
   lastUpdated: string;
 } | null> {
   try {
-    // If no Helius API key, return demo data
     if (!HELIUS_API_KEY) {
       console.log('No HELIUS_API_KEY - returning demo data');
       return {
@@ -56,9 +52,7 @@ export async function getPortfolio(walletAddress: string): Promise<{
 
     const response = await fetch(tokenUrl, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
     });
 
     if (!response.ok) {
@@ -73,20 +67,19 @@ export async function getPortfolio(walletAddress: string): Promise<{
       return null;
     }
 
-    // Process tokens from Helius response
     const rawTokens = data.result.tokens || [];
     
-    const tokens: HeliusToken[] = rawTokens.map((token: { mint: string; symbol?: string; name?: string; balance: number }) => {
-      const rwaInfo = RWA_TOKENS[token.mint] || 
-        rawTokens.find((t: { mint: string; symbol: string }) => t.mint === token.mint && (t.symbol === 'bSOL' || t.symbol === 'ONDO' || t.symbol === 'MP1'));
+    const tokens: HeliusToken[] = rawTokens.map((token: { mint: string; symbol?: string; name?: string; balance: number; price?: number }) => {
+      const rwaInfo = RWA_TOKENS[token.mint];
+      const price = token.price || 0;
 
       return {
         mint: token.mint,
         symbol: token.symbol || rwaInfo?.symbol || 'Unknown',
         name: token.name || rwaInfo?.name || 'Unknown Token',
         balance: token.balance,
-        price: token.price || 0,
-        value: (token.balance || 0) * (token.price || 0),
+        price: price,
+        value: token.balance * price,
         category: rwaInfo?.category || 'Other',
       };
     });
@@ -114,9 +107,7 @@ export async function getTokenPrice(mint: string): Promise<number | null> {
 
     const response = await fetch(priceUrl, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
     });
 
     if (!response.ok) {
