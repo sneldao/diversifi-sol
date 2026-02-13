@@ -420,36 +420,83 @@ export default function Home() {
                 </Suspense>
               </motion.div>
             )}
-          </div>
-        </main>
-
         {/* Footer */}
         <footer className="border-t border-emerald-500/10 bg-slate-900/80" role="contentinfo">
           <div className="max-w-7xl mx-auto px-6 py-10">
-            <div className="flex items-center justify-between flex-wrap gap-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center">
-                  <Shield className="w-6 h-6 text-white" />
+            {/* Main Footer Content */}
+            <div className="grid md:grid-cols-4 gap-8 mb-8">
+              {/* Brand & Description */}
+              <div className="md:col-span-2">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center">
+                    <Shield className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-white font-bold text-lg">DiversiFi</h3>
+                    <p className="text-slate-400 text-sm">Autonomous Wealth Guardian</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-white font-bold text-lg">DiversiFi</h3>
-                  <p className="text-slate-400 text-sm">Autonomous Wealth Protection</p>
+                <p className="text-slate-400 text-sm max-w-md">
+                  AI-powered portfolio guardian protecting your digital assets with real-time monitoring, AI health scoring, yield optimization, and multi-chain support.
+                </p>
+              </div>
+              
+              {/* Features */}
+              <div>
+                <h4 className="text-white font-semibold mb-3">Features</h4>
+                <ul className="text-slate-400 text-sm space-y-2">
+                  <li>• Real-time Monitoring</li>
+                  <li>• AI Health Scoring</li>
+                  <li>• Yield Optimization</li>
+                  <li>• Multi-chain Support</li>
+                </ul>
+              </div>
+              
+              {/* Links */}
+              <div>
+                <h4 className="text-white font-semibold mb-3">Links</h4>
+                <div className="flex flex-col gap-2 text-sm">
+                  <a href="https://github.com/sneldao/diversifi-sol" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-emerald-400 transition-colors flex items-center gap-2">
+                    <GitHub className="w-4 h-4" /> GitHub
+                  </a>
+                  <a href="https://diversifi-sol.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-emerald-400 transition-colors flex items-center gap-2">
+                    <Globe className="w-4 h-4" /> Web App
+                  </a>
+                  <a href="https://moltbook.com/u/DiversiFi" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-emerald-400 transition-colors flex items-center gap-2">
+                    <Sparkles className="w-4 h-4" /> Moltbook
+                  </a>
                 </div>
               </div>
-              <div className="flex items-center gap-6 text-sm text-slate-400">
-                <a href="https://github.com/sneldao/diversifi-sol" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-400 transition-colors">
-                  GitHub
-                </a>
-                <span className="flex items-center gap-1">
-                  <Sparkles className="w-4 h-4 text-emerald-400" />
-                  Colosseum AI Hackathon
-                </span>
-                <span>© 2026</span>
+            </div>
+            
+            {/* Powered By Section */}
+            <div className="border-t border-emerald-500/10 pt-6 mb-6">
+              <p className="text-slate-500 text-xs text-center mb-3">POWERED BY</p>
+              <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-400">
+                <span className="flex items-center gap-1"><span className="text-emerald-400">◆</span> Helius RPC</span>
+                <span className="flex items-center gap-1"><span className="text-emerald-400">◆</span> Jupiter</span>
+                <span className="flex items-center gap-1"><span className="text-emerald-400">◆</span> Birdeye API</span>
+                <span className="flex items-center gap-1"><span className="text-emerald-400">◆</span> Solana</span>
+              </div>
+            </div>
+            
+            {/* Bottom Bar */}
+            <div className="border-t border-emerald-500/10 pt-4">
+              <div className="flex items-center justify-between flex-wrap gap-4">
+                <div className="flex items-center gap-2 text-sm text-slate-400">
+                  <span className="flex items-center gap-1">
+                    <Sparkles className="w-4 h-4 text-emerald-400" />
+                    Built for Colosseum AI Hackathon
+                  </span>
+                  <span>• February 2026</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-slate-500">
+                  <span>© 2026 DiversiFi</span>
+                  <span>•</span>
+                  <span>Open Source</span>
+                </div>
               </div>
             </div>
           </div>
         </footer>
-      </div>
-    </div>
-  );
-}
+
