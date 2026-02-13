@@ -1,92 +1,127 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown, Zap } from 'lucide-react';
+import { TrendingUp, TrendingDown, Zap, RefreshCw } from 'lucide-react';
 
-interface PriceData {
+interface TokenPrice {
   symbol: string;
   price: number;
-  change24h: number;
-  changePercent: number;
+  value: number;
 }
 
-const INITIAL_PRICES: PriceData[] = [
-  { symbol: 'SOL', price: 98.45, change24h: 2.34, changePercent: 2.44 },
-  { symbol: 'BTC', price: 43250.00, change24h: 850.00, changePercent: 2.01 },
-  { symbol: 'ETH', price: 2280.50, change24h: -45.20, changePercent: -1.94 },
-  { symbol: 'USDC', price: 1.00, change24h: 0.00, changePercent: 0.00 },
-  { symbol: 'JUP', price: 0.89, change24h: 0.05, changePercent: 5.95 },
-  { symbol: 'BONK', price: 0.0000234, change24h: 0.0000012, changePercent: 5.41 },
-];
+interface PriceTickerProps {
+  walletAddress: string | null;
+}
 
-export function PriceTicker() {
-  const [prices, setPrices] = useState<PriceData[]>(INITIAL_PRICES);
-  const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
+export function PriceTicker({ walletAddress }: PriceTickerProps) {
+  const [prices, setPrices] = useState<TokenPrice[]>([]);
+  const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Simulate live price updates
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setPrices(prev => prev.map(coin => ({
-        ...coin,
-        price: coin.price * (1 + (Math.random() - 0.5) * 0.002), // ±0.1% change
-        change24h: coin.change24h + (Math.random() - 0.5) * 0.5,
-      })));
-      setLastUpdate(new Date());
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const formatPrice = (price: number, symbol: string) => {
-    if (price < 0.01) {
-      return price.toFixed(8);
-    } else if (price < 1) {
-      return price.toFixed(4);
+  const fetchPrices = async () => {
+    if (!walletAddress) return;
+    
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const res = await fetch(`/api/portfolio?wallet=${walletAddress}`);
+      if (!res.ok) throw new Error('Failed to fetch prices');
+      
+      const data = await res.json();
+      if (data.success && data.data?.tokens) {
+        // Get top tokens by value
+        const tokens = data.data.tokens
+          .sort((a: { value: number }, b: { value: number }) => b.value - a.value)
+          .slice(0, 6)
+          .map((t: { symbol: string; price: number; value: number }) => ({
+            symbol: t.symbol,
+            price: t.price || 0,
+            value: t.value || 0,
+          }));
+        
+        setPrices(tokens);
+        setLastUpdate(new Date());
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch prices');
+    } finally {
+      setIsLoading(false);
     }
-    return price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
 
-  const formatChange = (percent: number) => {
-    const sign = percent >= 0 ? '+' : '';
-    return `${sign}${percent.toFixed(2)}%`;
+  useEffect(() => {
+    if (walletAddress) {
+      fetchPrices();
+    }
+  }, [walletAddress]);
+
+  // Auto-refresh every 30 seconds
+  useEffect(() => {
+    if (!walletAddress) return;
+    
+    const interval = setInterval(fetchPrices, 30000);
+    return () => clearInterval(interval);
+  }, [walletAddress]);
+
+  const formatPrice = (price: number) => {
+    if (price >= 1000) {
+      return `$${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    } else if (price >= 1) {
+      return `$${price.toFixed(2)}`;
+    } else if (price >= 0.01) {
+      return `$${price.toFixed(4)}`;
+    }
+    return `$${price.toExponential(4)}`;
   };
+
+  if (!walletAddress) {
+    return (
+      <div className="w-full py-2 px-4 bg-slate-900/40 border-y border-emerald-500/10">
+        <div className="flex items-center gap-2 text-sm text-slate-500">
+          <Zap className="w-3 h-3" />
+          <span>Connect wallet to see live prices</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full overflow-hidden bg-slate-900/60 backdrop-blur-sm border-y border-emerald-500/10">
-      <div className="flex items-center gap-6 py-2 px-4">
+      <div className="flex items-center gap-4 py-2 px-4">
         <div className="flex items-center gap-2 text-xs text-emerald-400 whitespace-nowrap">
-          <Zap className="w-3 h-3 animate-pulse" />
+          {isLoading ? (
+            <RefreshCw className="w-3 h-3 animate-spin" />
+          ) : (
+            <Zap className="w-3 h-3" />
+          )}
           <span>Live</span>
         </div>
         
-        <div className="flex gap-8 animate-ticker">
-          {[...prices, ...prices].map((coin, i) => (
-            <motion.div
-              key={`${coin.symbol}-${i}`}
-              className="flex items-center gap-2 text-sm whitespace-nowrap"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-            >
-              <span className="font-semibold text-white">{coin.symbol}</span>
-              <span className="text-slate-300">${formatPrice(coin.price, coin.symbol)}</span>
-              <span className={`flex items-center gap-0.5 ${
-                coin.changePercent >= 0 ? 'text-emerald-400' : 'text-red-400'
-              }`}>
-                {coin.changePercent >= 0 ? (
-                  <TrendingUp className="w-3 h-3" />
-                ) : (
-                  <TrendingDown className="w-3 h-3" />
-                )}
-                {formatChange(coin.changePercent)}
-              </span>
-            </motion.div>
-          ))}
-        </div>
-        
-        <div className="text-xs text-slate-500 ml-auto whitespace-nowrap">
-          Updated: {lastUpdate.toLocaleTimeString()}
-        </div>
+        {error ? (
+          <div className="text-xs text-red-400">{error}</div>
+        ) : prices.length > 0 ? (
+          <>
+            <div className="flex gap-6 animate-ticker">
+              {[...prices, ...prices].map((token, i) => (
+                <div
+                  key={`${token.symbol}-${i}`}
+                  className="flex items-center gap-2 text-sm whitespace-nowrap"
+                >
+                  <span className="font-semibold text-white">{token.symbol}</span>
+                  <span className="text-slate-300">{formatPrice(token.price)}</span>
+                </div>
+              ))}
+            </div>
+            
+            <div className="text-xs text-slate-500 ml-auto whitespace-nowrap">
+              {lastUpdate ? lastUpdate.toLocaleTimeString() : '...'}
+            </div>
+          </>
+        ) : (
+          <div className="text-xs text-slate-500">No tokens found</div>
+        )}
       </div>
     </div>
   );
