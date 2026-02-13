@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-import { TrendingUp, TrendingDown, RefreshCw, AlertCircle, CheckCircle2, ArrowRight } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { TrendingUp, TrendingDown, RefreshCw, AlertCircle, CheckCircle2, Sparkles, ArrowRight } from 'lucide-react';
 
 interface RebalanceData {
   portfolio: {
@@ -29,6 +29,11 @@ interface RebalanceData {
       valueDiff: number;
       action: string;
     }>;
+  };
+  diversification: {
+    hasRWA: boolean;
+    rwaCount: number;
+    suggestions: string[];
   };
 }
 
@@ -70,6 +75,7 @@ export function RebalancingPanel({ walletAddress, guardianLaunched }: Rebalancin
   }, [walletAddress, guardianLaunched]);
 
   if (!guardianLaunched) return null;
+  
   if (isLoading) {
     return (
       <div className="glass-card rounded-xl p-6 animate-pulse">
@@ -99,7 +105,7 @@ export function RebalancingPanel({ walletAddress, guardianLaunched }: Rebalancin
 
   if (!rebalanceData) return null;
 
-  const { allocation, rebalancing } = rebalanceData;
+  const { allocation, rebalancing, diversification } = rebalanceData;
 
   return (
     <div className="glass-card rounded-xl p-6">
@@ -112,54 +118,74 @@ export function RebalancingPanel({ walletAddress, guardianLaunched }: Rebalancin
           )}
           <h3 className="text-white font-semibold">Portfolio Rebalancing</h3>
         </div>
-        {rebalancing.totalDrift > 0 && (
-          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-            rebalancing.needsRebalancing 
-              ? 'bg-yellow-500/20 text-yellow-400' 
-              : 'bg-emerald-500/20 text-emerald-400'
-          }`}>
-            {rebalancing.needsRebalancing ? 'Action Needed' : 'Balanced'}
-          </span>
-        )}
+        <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+          rebalancing.needsRebalancing 
+            ? 'bg-yellow-500/20 text-yellow-400' 
+            : 'bg-emerald-500/20 text-emerald-400'
+        }`}>
+          {rebalancing.needsRebalancing ? 'Action Needed' : 'Balanced'}
+        </span>
       </div>
+
+      {/* Diversification Suggestions (for wallets without RWA) */}
+      {!diversification.hasRWA && diversification.suggestions.length > 0 && (
+        <div className="mb-6 p-4 rounded-lg bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-emerald-500/20">
+          <div className="flex items-center gap-2 mb-3">
+            <Sparkles className="w-5 h-5 text-emerald-400" />
+            <h4 className="text-emerald-400 font-semibold">Diversification Opportunity</h4>
+          </div>
+          <div className="space-y-2">
+            {diversification.suggestions.map((suggestion, idx) => (
+              <p key={idx} className="text-slate-300 text-sm">{suggestion}</p>
+            ))}
+          </div>
+          <div className="mt-3 pt-3 border-t border-emerald-500/20">
+            <p className="text-xs text-slate-500">
+              💡 RWA tokens provide yield from real-world assets (treasuries, private credit)
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Allocation Chart */}
-      <div className="mb-6">
-        <h4 className="text-slate-400 text-sm mb-3">Current vs Target Allocation</h4>
-        <div className="space-y-3">
-          {allocation.current.map((token) => {
-            const target = allocation.target[token.symbol.replace('bSOL', 'bSOL').replace('MP1', 'MP1').replace('ONDO', 'ONDO') as keyof typeof allocation.target] || 0;
-            const drift = token.percentage - (target * 100);
-            
-            return (
-              <div key={token.symbol} className="space-y-1">
-                <div className="flex justify-between text-sm">
-                  <span className="text-white">{token.symbol}</span>
-                  <span className="text-slate-400">
-                    {token.percentage.toFixed(1)}% / {Math.round(target * 100)}%
-                  </span>
+      {diversification.hasRWA && (
+        <div className="mb-6">
+          <h4 className="text-slate-400 text-sm mb-3">Current vs Target Allocation</h4>
+          <div className="space-y-3">
+            {allocation.current.map((token) => {
+              const target = allocation.target[token.symbol.replace('bSOL', 'bSOL').replace('MP1', 'MP1').replace('ONDO', 'ONDO') as keyof typeof allocation.target] || 0;
+              const drift = token.percentage - (target * 100);
+              
+              return (
+                <div key={token.symbol} className="space-y-1">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-white">{token.symbol}</span>
+                    <span className="text-slate-400">
+                      {token.percentage.toFixed(1)}% / {Math.round(target * 100)}%
+                    </span>
+                  </div>
+                  <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+                    <div 
+                      className={`h-full rounded-full ${
+                        drift > 5 ? 'bg-red-500' : drift < -5 ? 'bg-yellow-500' : 'bg-emerald-500'
+                      }`}
+                      style={{ width: `${Math.min(token.percentage, 100)}%` }}
+                    />
+                  </div>
+                  {Math.abs(drift) > 5 && (
+                    <p className={`text-xs ${drift > 0 ? 'text-red-400' : 'text-yellow-400'}`}>
+                      {drift > 0 ? 'Overweight' : 'Underweight'} by {Math.abs(drift).toFixed(1)}%
+                    </p>
+                  )}
                 </div>
-                <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
-                  <div 
-                    className={`h-full rounded-full ${
-                      drift > 5 ? 'bg-red-500' : drift < -5 ? 'bg-yellow-500' : 'bg-emerald-500'
-                    }`}
-                    style={{ width: `${Math.min(token.percentage, 100)}%` }}
-                  />
-                </div>
-                {Math.abs(drift) > 5 && (
-                  <p className={`text-xs ${drift > 0 ? 'text-red-400' : 'text-yellow-400'}`}>
-                    {drift > 0 ? 'Overweight' : 'Underweight'} by {Math.abs(drift).toFixed(1)}%
-                  </p>
-                )}
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Rebalancing Suggestions */}
-      {rebalancing.needsRebalancing && rebalancing.suggestions.length > 0 && (
+      {rebalancing.needsRebalancing && rebalancing.suggestions.length > 0 && diversification.hasRWA && (
         <div className="border-t border-slate-700/50 pt-4">
           <h4 className="text-slate-400 text-sm mb-3 flex items-center gap-2">
             <TrendingUp className="w-4 h-4" />
@@ -183,7 +209,7 @@ export function RebalancingPanel({ walletAddress, guardianLaunched }: Rebalancin
         </div>
       )}
 
-      {!rebalancing.needsRebalancing && (
+      {!rebalancing.needsRebalancing && diversification.hasRWA && (
         <div className="border-t border-slate-700/50 pt-4">
           <div className="flex items-center gap-2 text-emerald-400">
             <CheckCircle2 className="w-4 h-4" />
