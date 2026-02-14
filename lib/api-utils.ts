@@ -3,10 +3,20 @@ import type { NextRequest } from 'next/server';
 
 // Rate limiting configuration
 const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
-const RATE_LIMIT_MAX = 100; // requests per window
+const RATE_LIMIT_MAX = 100; // requests per window per IP
+const WALLET_RATE_LIMIT_MAX = 30; // per wallet per minute
 
 // In-memory rate limit store (use Redis in production)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
+const walletRateLimitStore = new Map<string, { count: number; resetTime: number }>();
+
+// Price cache
+interface CacheEntry<T> {
+  data: T;
+  expiresAt: number;
+}
+const priceCache = new Map<string, CacheEntry<unknown>>();
+const CACHE_TTL = 30000; // 30 seconds
 
 export function getRateLimitInfo(ip: string): { count: number; remaining: number; resetTime: number } {
   const now = Date.now();
@@ -18,7 +28,25 @@ export function getRateLimitInfo(ip: string): { count: number; remaining: number
     return { count: 1, remaining: RATE_LIMIT_MAX - 1, resetTime };
   }
   
+  existing.count++;
   const remaining = Math.max(0, RATE_LIMIT_MAX - existing.count);
+  return { ...existing, remaining };
+}
+
+// Per-wallet rate limiting
+export function getWalletRateLimitInfo(wallet: string): { count: number; remaining: number; resetTime: number } {
+  const now = Date.now();
+  const key = wallet.toLowerCase();
+  const existing = walletRateLimitStore.get(key);
+  
+  if (!existing || now > existing.resetTime) {
+    const resetTime = now + RATE_LIMIT_WINDOW;
+    walletRateLimitStore.set(key, { count: 1, resetTime });
+    return { count: 1, remaining: WALLET_RATE_LIMIT_MAX - 1, resetTime };
+  }
+  
+  existing.count++;
+  const remaining = Math.max(0, WALLET_RATE_LIMIT_MAX - existing.count);
   return { ...existing, remaining };
 }
 
@@ -26,6 +54,40 @@ export function isRateLimited(ip: string): boolean {
   const info = getRateLimitInfo(ip);
   return info.count >= RATE_LIMIT_MAX;
 }
+
+export function isWalletRateLimited(wallet: string): boolean {
+  const info = getWalletRateLimitInfo(wallet);
+  return info.count >= WALLET_RATE_LIMIT_MAX;
+}
+
+// Price caching functions
+export function getCachedPrice<T>(key: string): T | null {
+  const entry = priceCache.get(key);
+  if (entry && Date.now() < entry.expiresAt) {
+    return entry.data as T;
+  }
+  priceCache.delete(key);
+  return null;
+}
+
+export function setCachedPrice<T>(key: string, data: T, ttl: number = CACHE_TTL): void {
+  priceCache.set(key, {
+    data,
+    expiresAt: Date.now() + ttl,
+  });
+}
+
+export function clearExpiredCache(): void {
+  const now = Date.now();
+  for (const [key, entry] of priceCache.entries()) {
+    if (now > entry.expiresAt) {
+      priceCache.delete(key);
+    }
+  }
+}
+
+// Clean cache periodically
+setInterval(clearExpiredCache, CACHE_TTL);
 
 // Error response helper
 export function errorResponse(message: string, status: number = 500, details?: Record<string, unknown>) {
