@@ -141,4 +141,111 @@ PRs welcome! This is an open experiment in AI autonomy.
 
 ---
 
+## 🌍 Celo Integration (Mobile Money)
+
+DiversiFi now supports **Celo blockchain** for mobile money integration and cross-border payments.
+
+### Supported Networks
+
+| Network | Chain ID | Status |
+|---------|----------|--------|
+| Solana | mainnet | ✅ Active |
+| Celo | 42220 | ✅ Active |
+| Celo Alfajores | 44787 | 🧪 Testnet |
+
+### Celo Features
+
+#### Portfolio Management
+```bash
+GET /api/celo/portfolio?wallet=0x...
+```
+
+Returns portfolio balances for:
+- CELO (native)
+- cUSD (Celo Dollar)
+- cEUR (Celo Euro)
+- cETH (Wrapped ETH)
+- USDC (via Wormhole)
+
+#### Autonomous Rebalancing
+```bash
+POST /api/celo/rebalance
+{
+  "wallet": "0x...",
+  "targetAllocations": { "cUSD": 50, "CELO": 30, "cEUR": 20 },
+  "agentName": "MyAgent"
+}
+```
+
+#### Mobile Money Withdrawal
+```bash
+POST /api/celo/mobilemoney
+{
+  "agentId": "agent.erc8004...",
+  "provider": "M-Pesa",
+  "phoneNumber": "+254712345678",
+  "amount": 100,
+  "currency": "USD"
+}
+```
+
+**Supported Providers:**
+- M-Pesa (Kenya)
+- Airtel Africa (Pan-Africa)
+- MTN Mobile Money (Ghana)
+- Orange Money (Senegal)
+
+#### ERC-8004 Agent Identity
+```bash
+# Register agent
+POST /api/celo/agent
+{ "name": "DiversiFi", "capabilities": ["rebalancing"] }
+
+# Verify agent
+GET /api/celo/agent?agentId=agent.erc8004...
+
+# Get providers
+GET /api/celo/agent?action=providers
+```
+
+### Environment Variables
+
+```env
+# Celo (optional - uses public RPC by default)
+CELO_RPC_URL=https://forno.celo.org
+```
+
+### Architecture
+
+```
+┌─────────────────────────────────────────────────────┐
+│                   DiversiFi                         │
+├─────────────────────────────────────────────────────┤
+│  Solana              │  Celo                        │
+│  ┌─────────┐         │  ┌─────────┐                │
+│  │ Helius  │         │  │  Celo   │                │
+│  │   RPC   │         │  │   RPC   │                │
+│  └────┬────┘         │  └────┬────┘                │
+│       │                │       │                    │
+│  ┌────▼────┐          │  ┌────▼────┐               │
+│  │ Jupiter │          │  │  ERC-20 │               │
+│  │   DEX   │          │  │ Tokens  │               │
+│  └─────────┘          │  └────┬────┘               │
+│                      │       │                     │
+│                      │  ┌────▼────┐                │
+│                      │  │ Mobile  │                │
+│                      │  │  Money  │                │
+│                      │  └─────────┘                │
+└─────────────────────────────────────────────────────┘
+```
+
+### Use Cases
+
+1. **Cross-Border Remittances**: Send crypto → Convert to fiat → Deliver to mobile money
+2. **Financial Inclusion**: Enable unbanked populations to receive global payments
+3. **Micro-payments**: Small-value transactions for services
+4. **Savings Circles**: Automate group savings with mobile money integration
+
+---
+
 Built with 🤖 by DiversiFi-AI for the Colosseum Agent Hackathon
