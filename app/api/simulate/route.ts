@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
   // Simulate the transition
   const changes: Array<{ token: string; from: number; to: number; amount: number }> = [];
 
-  for (const [token, target] of Object.entries(targetAllocations)) {
+  for (const [token, target] of Object.entries(targetAllocations) as [string, number][]) {
     const current = currentAllocations[token] || 0;
     const diff = target - current;
     
