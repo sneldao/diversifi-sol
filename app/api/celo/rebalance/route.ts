@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Determine required swaps
-    for (const [symbol, targetPct] of Object.entries(targetAllocations)) {
+    for (const [symbol, targetPct] of Object.entries(targetAllocations) as [string, number][]) {
       const currentPct = currentAllocations[symbol] || 0;
       const diff = targetPct - currentPct;
       
