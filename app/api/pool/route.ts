@@ -1,34 +1,6 @@
 import { successResponse } from '@/lib/api-utils';
+import { getPendingRequestsSize } from '@/lib/pool';
 
-// Request coalescing - dedupe identical concurrent requests
-const pendingRequests = new Map<string, Promise<unknown>>();
-
-export async function coalesce<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlMs: number = 5000
-): Promise<T> {
-  // Check if there's already a pending request
-  if (pendingRequests.has(key)) {
-    return pendingRequests.get(key) as Promise<T>;
-  }
-
-  // Create new request
-  const promise = fetcher().finally(() => {
-    pendingRequests.delete(key);
-  });
-
-  pendingRequests.set(key, promise);
-
-  // Auto-cleanup after TTL
-  setTimeout(() => {
-    pendingRequests.delete(key);
-  }, ttlMs);
-
-  return promise;
-}
-
-// Connection pool simulation
 class ConnectionPool {
   private available = 10;
   private inUse = 0;
@@ -74,7 +46,7 @@ export async function GET() {
   return successResponse({
     rpc: rpcPool.getStats(),
     database: dbPool.getStats(),
-    pendingRequests: pendingRequests.size,
+    pendingRequests: getPendingRequestsSize(),
   });
 }
 
