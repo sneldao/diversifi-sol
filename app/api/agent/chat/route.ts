@@ -85,9 +85,9 @@ export async function POST(request: NextRequest) {
     let portfolio;
     if (wallet && ['portfolio', 'price'].includes(intent)) {
       if (chain === 'celo' || entities.chain === 'celo') {
-        portfolio = await getCeloPortfolio(wallet);
+        portfolio = await getCeloPortfolio(wallet) as { totalValue: number; tokens: Array<{ symbol: string; value: number; balance: number }> } | undefined;
       } else if (chain === 'solana' || entities.chain === 'solana') {
-        portfolio = await getPortfolio(wallet);
+        portfolio = await getPortfolio(wallet) as { totalValue: number; tokens: Array<{ symbol: string; value: number; balance: number }> } | undefined;
       } else {
         // Both chains
         const [solana, celo] = await Promise.all([
