@@ -21,11 +21,12 @@ export async function POST(request: NextRequest) {
     return errorResponse('Type, windowMs, and maxRequests required', 400);
   }
 
-  if (!config[type]) {
+  const configType = type as keyof typeof config;
+  if (!config[configType]) {
     return errorResponse(`Unknown type. Available: ${Object.keys(config).join(', ')}`, 400);
   }
 
-  config[type] = { windowMs, maxRequests };
+  config[configType] = { windowMs, maxRequests };
   return successResponse({ config });
 }
 
