@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
         ]);
         portfolio = {
           totalValue: (solana?.totalValue || 0) + (celo?.totalValue || 0),
-          tokens: [...(solana?.tokens || []), ...(celo?.tokens || [])],
+          tokens: [...(solana?.tokens || []), ...(celo?.tokens || [])] as Array<{ symbol: string; value: number; balance: number }>,
         };
       }
     }
