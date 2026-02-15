@@ -1,7 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { successResponse, errorResponse } from '@/lib/api-utils';
-
-const API_KEYS = new Map<string, { name: string; rateLimit: number; scopes: string[]; createdAt: string }>();
+import { createApiKey, getApiKeyInfo, listApiKeys, deleteApiKey } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
@@ -9,9 +8,7 @@ export async function POST(request: NextRequest) {
 
   if (!name) return errorResponse('API key name required', 400);
 
-  const key = `df_${Date.now()}_${Math.random().toString(36).slice(2, 16)}`;
-  
-  API_KEYS.set(key, { name, rateLimit, scopes, createdAt: new Date().toISOString() });
+  const key = createApiKey(name, rateLimit, scopes);
 
   return successResponse({ 
     apiKey: key,
@@ -24,18 +21,12 @@ export async function GET(request: NextRequest) {
   const key = searchParams.get('key');
 
   if (key) {
-    const info = API_KEYS.get(key);
+    const info = getApiKeyInfo(key);
     if (!info) return errorResponse('Invalid API key', 401);
     return successResponse({ valid: true, info: { name: info.name, scopes: info.scopes } });
   }
 
-  return successResponse({ 
-    keys: Array.from(API_KEYS.entries()).map(([k, v]) => ({ 
-      key: k.slice(0, 10) + '...', 
-      name: v.name, 
-      scopes: v.scopes 
-    })) 
-  });
+  return successResponse({ keys: listApiKeys() });
 }
 
 export async function DELETE(request: NextRequest) {
@@ -44,12 +35,6 @@ export async function DELETE(request: NextRequest) {
 
   if (!key) return errorResponse('API key required', 400);
 
-  const deleted = API_KEYS.delete(key);
+  const deleted = deleteApiKey(key);
   return successResponse({ deleted });
-}
-
-// Validate API key middleware
-export function validateApiKey(key: string | null): boolean {
-  if (!key) return false;
-  return API_KEYS.has(key);
 }
