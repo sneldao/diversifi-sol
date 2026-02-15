@@ -24,15 +24,15 @@ const CELO_RPC_URLS = [
 ];
 
 // ERC-20 token addresses on Celo mainnet
-const CELO_TOKENS: Record<string, { symbol: string; name: string; category: string; decimals: number }> = {
-  '0x0000000000000000000000000000000000000000': { symbol: 'CELO', name: 'Celo Native', category: 'Native', decimals: 18 },
-  '0x765de816845861e75a25fca122bb6898b8b12816': { symbol: 'cUSD', name: 'Celo Dollar', category: 'Stablecoin', decimals: 18 },
-  '0xD8763CBa276a3730E8dcD1Bf5D5cF2D5D7b9760': { symbol: 'cEUR', name: 'Celo Euro', category: 'Stablecoin', decimals: 18 },
-  '0x471EcE3750Da237f93B8E339c536989b8978a438': { symbol: 'cETH', name: 'Celo Ether', category: 'Wrapped ETH', decimals: 18 },
-  '0xef4229c8c3250CEB2DfA4d4D32924a84bD1a9fC5': { symbol: 'USDC', name: 'USD Coin (Celo)', category: 'Stablecoin', decimals: 6 },
-  '0x1f8A4e5b6C7D8E9f0a1b2c3d4e5f6a7b8c9d0e1f': { symbol: 'MOBI', name: 'Mobius', category: 'DeFi', decimals: 18 },
-  '0x2A3684eCD8C5A5c8a5D9D3E3b2F1E0D9C8B7A6F5': { symbol: 'POH', name: 'Preservation of Heritage', category: 'Social Impact', decimals: 18 },
-  '0xE74Abf04B6B4e9a5d4d4B7D4e6F8A9B0C1D2E3F4': { symbol: 'cREAL', name: 'Celo Real', category: 'Stablecoin', decimals: 18 },
+const CELO_TOKENS: Record<string, { symbol: string; name: string; category: string; decimals: number; address: string }> = {
+  '0x0000000000000000000000000000000000000000': { symbol: 'CELO', name: 'Celo Native', category: 'Native', decimals: 18, address: '0x0000000000000000000000000000000000000000' },
+  '0x765de816845861e75a25fca122bb6898b8b12816': { symbol: 'cUSD', name: 'Celo Dollar', category: 'Stablecoin', decimals: 18, address: '0x765de816845861e75a25fca122bb6898b8b12816' },
+  '0xD8763CBa276a3730E8dcD1Bf5D5cF2D5D7b9760': { symbol: 'cEUR', name: 'Celo Euro', category: 'Stablecoin', decimals: 18, address: '0xD8763CBa276a3730E8dcD1Bf5D5cF2D5D7b9760' },
+  '0x471EcE3750Da237f93B8E339c536989b8978a438': { symbol: 'cETH', name: 'Celo Ether', category: 'Wrapped ETH', decimals: 18, address: '0x471EcE3750Da237f93B8E339c536989b8978a438' },
+  '0xef4229c8c3250CEB2DfA4d4D32924a84bD1a9fC5': { symbol: 'USDC', name: 'USD Coin (Celo)', category: 'Stablecoin', decimals: 6, address: '0xef4229c8c3250CEB2DfA4d4D32924a84bD1a9fC5' },
+  '0x1f8A4e5b6C7D8E9f0a1b2c3d4e5f6a7b8c9d0e1f': { symbol: 'MOBI', name: 'Mobius', category: 'DeFi', decimals: 18, address: '0x1f8A4e5b6C7D8E9f0a1b2c3d4e5f6a7b8c9d0e1f' },
+  '0x2A3684eCD8C5A5c8a5D9D3E3b2F1E0D9C8B7A6F5': { symbol: 'POH', name: 'Preservation of Heritage', category: 'Social Impact', decimals: 18, address: '0x2A3684eCD8C5A5c8a5D9D3E3b2F1E0D9C8B7A6F5' },
+  '0xE74Abf04B6B4e9a5d4d4B7D4e6F8A9B0C1D2E3F4': { symbol: 'cREAL', name: 'Celo Real', category: 'Stablecoin', decimals: 18, address: '0xE74Abf04B6B4e9a5d4d4B7D4e6F8A9B0C1D2E3F4' },
 };
 
 // Get the primary RPC URL
