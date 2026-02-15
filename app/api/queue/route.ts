@@ -37,8 +37,8 @@ export async function POST(request: NextRequest) {
   };
 
   // Insert based on priority
-  const priorityOrder = { high: 0, normal: 1, low: 2 };
-  const insertIndex = jobQueue.findIndex(j => priorityOrder[j.priority] > priorityOrder[priority]);
+  const priorityOrder: Record<string, number> = { high: 0, normal: 1, low: 2 };
+  const insertIndex = jobQueue.findIndex(j => priorityOrder[j.priority as string] > priorityOrder[priority]);
   
   if (insertIndex === -1) {
     jobQueue.push(job);
