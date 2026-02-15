@@ -49,5 +49,3 @@ export async function GET() {
     pendingRequests: getPendingRequestsSize(),
   });
 }
-
-export { rpcPool, dbPool };
