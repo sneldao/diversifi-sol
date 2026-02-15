@@ -40,7 +40,7 @@ export function verifySignature(
     .update(`${signed.timestamp}.${signed.nonce}.${payload}`)
     .digest('hex');
   
-  return signature === signed.signature;
+  return expected === signed.signature;
 }
 
 // Generate webhook signature
