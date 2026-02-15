@@ -133,10 +133,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Estimate gas for swaps
-    const [gasPrice, blockNumber] = await Promise.all([
-      getCeloGasPrice(),
-      // estimateGas would be called here with actual swap contracts
-    ]);
+    const gasPrice = await getCeloGasPrice();
 
     // Build response
     const rebalancePlan = {
