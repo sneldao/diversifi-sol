@@ -78,4 +78,4 @@ export async function GET() {
   });
 }
 
-export { rpcPool, dbPool, coalesce };
+export { rpcPool, dbPool };

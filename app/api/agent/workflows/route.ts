@@ -44,9 +44,9 @@ const WORKFLOWS = {
   
   'emergency-safety': {
     name: 'Emergency Portfolio Safety',
-    description: 'Move all to stablecoins in market: [
-      { downturn',
-    steps tool: 'get_portfolio', params: '{wallet}' },
+    description: 'Move all to stablecoins in market: [{ downturn }]',
+    steps: [
+      { tool: 'get_portfolio', params: '{wallet}' },
       { tool: 'swap', params: '{fromToken: SOL, toToken: USDC, amount: all}' },
       { tool: 'set_alert', params: '{token: USDC, condition: above, threshold: 80}' },
     ],
