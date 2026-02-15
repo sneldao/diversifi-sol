@@ -22,21 +22,21 @@ export async function GET(request: NextRequest) {
     if (solanaWallet) {
       promises.push((async () => {
         const solana = await getPortfolio(solanaWallet);
-        if (solana) results.solana = { totalValue: solana.totalValue, tokens: solana.tokens, lastUpdated: solana.lastUpdated };
+        if (solana) results.solana = { totalValue: solana.totalValue, tokens: solana.tokens as unknown[], lastUpdated: solana.lastUpdated };
       })());
     }
 
     if (celoWallet) {
       promises.push((async () => {
         const celo = await getCeloPortfolio(celoWallet);
-        if (celo) results.celo = { totalValue: celo.totalValue, tokens: celo.tokens, lastUpdated: celo.lastUpdated };
+        if (celo) results.celo = { totalValue: celo.totalValue, tokens: celo.tokens as unknown[], lastUpdated: celo.lastUpdated };
       })());
     }
 
     if (monadWallet) {
       promises.push((async () => {
         const monad = await getMonadPortfolio(monadWallet);
-        if (monad) results.monad = { totalValue: monad.totalValue, tokens: monad.tokens, lastUpdated: monad.lastUpdated };
+        if (monad) results.monad = { totalValue: monad.totalValue, tokens: monad.tokens as unknown[], lastUpdated: monad.lastUpdated };
       })());
     }
 
