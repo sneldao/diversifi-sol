@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 // In production, this would be a database
 const guardians = new Map<string, {
   walletAddress: string;
+  chain: string;
   guardianId: string;
   deployedAt: string;
   status: 'active' | 'paused' | 'error';
@@ -19,7 +20,7 @@ const guardians = new Map<string, {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { walletAddress } = body;
+    const { walletAddress, chain = 'solana' } = body;
 
     if (!walletAddress) {
       return NextResponse.json(
@@ -28,10 +29,27 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate Solana wallet address (base58, 32-44 chars)
-    if (walletAddress.length < 32 || walletAddress.length > 44) {
+    // Validate wallet address based on chain
+    let isValidWallet = false;
+    let walletType = '';
+    
+    if (chain === 'base' || chain === 'bsc' || /^0x[a-fA-F0-9]{40}$/.test(walletAddress)) {
+      // EVM wallet (Base, BSC, etc.)
+      if (/^0x[a-fA-F0-9]{40}$/.test(walletAddress)) {
+        isValidWallet = true;
+        walletType = 'evm';
+      }
+    } else {
+      // Solana wallet (base58, 32-44 chars)
+      if (walletAddress.length >= 32 && walletAddress.length <= 44) {
+        isValidWallet = true;
+        walletType = 'solana';
+      }
+    }
+
+    if (!isValidWallet) {
       return NextResponse.json(
-        { error: 'Invalid Solana wallet address' },
+        { error: 'Invalid wallet address for specified chain' },
         { status: 400 }
       );
     }
@@ -57,6 +75,7 @@ export async function POST(request: NextRequest) {
     // Create new guardian record
     const guardian = {
       walletAddress,
+      chain,
       guardianId,
       deployedAt,
       status: 'active' as const,
