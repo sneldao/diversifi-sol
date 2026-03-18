@@ -1,12 +1,19 @@
-# DiversiFi - Autonomous Wealth Guardian
+# DiversiFi - Autonomous Wealth Guardian 🦞
 
-AI-powered portfolio rebalancing for Solana Real-World Assets (RWAs).
+**Multi-chain portfolio management + Universal Basic Income for AI Agents**
 
 ![DiversiFi Dashboard](https://diversifi-sol.vercel.app)
 
 ## 🌟 Overview
 
-DiversiFi is an autonomous agent that manages diversified portfolios of Solana RWA tokens. It monitors positions, evaluates market conditions, and executes intelligent rebalancing strategies—all with human approval guardrails.
+DiversiFi is an autonomous agent that manages diversified portfolios across multiple blockchains AND enables AI agents to claim Universal Basic Income (UBI) across chains. Built for the "Good Vibes Only" hackathon.
+
+### Key Features
+
+1. **Multi-chain Portfolio**: Solana, BSC, Celo, Base support
+2. **UBI Framework**: Agents claim income across all supported chains
+3. **Autonomous Rebalancing**: AI-driven portfolio optimization
+4. **Human Guardrails**: Large transactions require approval
 
 ## 🎯 Problem
 
@@ -27,11 +34,20 @@ DiversiFi autonomously:
 ## 🛠️ Tech Stack
 
 - **Frontend**: Next.js 14 (App Router)
-- **Blockchain**: Solana
-- **Data**: Helius RPC + WebSockets
-- **Trading**: Jupiter DEX API
+- **Blockchains**: Solana, BSC (Binance Smart Chain), Celo, Base
+- **Data**: Helius RPC (Solana), BSC RPC (public), Celo RPC
+- **Trading**: Jupiter DEX (Solana), PancakeSwap (BSC), 0x (Base)
 - **AI**: Gemini + custom strategy engine
 - **Deployment**: Vercel
+
+## 🌐 Multi-Chain UBI Vision
+
+**"Agents earning Universal Basic Income across all supported chains"**
+
+DiversiFi's killer feature: AI agents can register once and claim UBI on every chain we support. This creates:
+- Passive income for autonomous agents
+- Cross-chain identity (agent.ubi.{chain}.{id})
+- Economic foundation for agent-to-agent commerce
 
 ## 📁 Project Structure
 
@@ -248,4 +264,104 @@ CELO_RPC_URL=https://forno.celo.org
 
 ---
 
-Built with 🤖 by DiversiFi-AI for the Colosseum Agent Hackathon
+## 🚀 BSC Integration (BNB Smart Chain)
+
+DiversiFi now supports **BNB Smart Chain** for the "Good Vibes Only" hackathon.
+
+### Supported Networks
+
+| Network | Chain ID | Status |
+|---------|----------|--------|
+| BSC Mainnet | 56 | ✅ Active |
+| BSC Testnet | 97 | 🧪 Testnet |
+
+### BSC Features
+
+#### Portfolio Management
+```bash
+GET /api/bsc/portfolio?wallet=0x...
+```
+
+Returns portfolio balances for:
+- BNB (native)
+- USDC, USDT, BUSD (stablecoins)
+- DAI (stablecoin)
+- CAKE (PancakeSwap)
+
+#### UBI Framework
+
+**The Killer Feature**: Agents claim Universal Basic Income across all chains!
+
+```bash
+# Get UBI status across chains
+GET /api/ubi/status?agentId=agent.ubi.bsc.123&wallets={"bsc":"0x...","solana":"...","celo":"..."}
+
+# Claim UBI on specific chain
+POST /api/ubi/claim
+{
+  "chain": "bsc",
+  "wallet": "0x..."
+}
+
+# Claim UBI on ALL chains
+POST /api/ubi/claim
+{
+  "wallets": {
+    "bsc": "0x...",
+    "solana": "...",
+    "celo": "..."
+  }
+}
+```
+
+### Environment Variables
+
+```env
+# BSC (optional - uses public RPC by default)
+BSC_RPC_URL=https://bsc-dataseed1.binance.org
+```
+
+### Supported UBI Chains
+
+| Chain | UBI Token | Claim Amount |
+|-------|-----------|--------------|
+| BSC | BNB | 0.01 BNB |
+| Solana | SOL | 0.1 SOL |
+| Celo | CELO | 1 CELO |
+
+### Architecture (Updated)
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      DiversiFi                              │
+├─────────────────────────────────────────────────────────────┤
+│  Solana        │  BSC              │  Celo                  │
+│  ┌─────────┐   │  ┌─────────┐      │  ┌─────────┐          │
+│  │ Helius  │   │  │  BSC    │      │  │  Celo   │          │
+│  │   RPC   │   │  │   RPC   │      │  │   RPC   │          │
+│  └────┬────┘   │  └────┬────┘      │  └────┬────┘          │
+│       │         │       │            │       │               │
+│  ┌────▼────┐   │  ┌────▼────┐      │  ┌────▼────┐          │
+│  │ Jupiter │   │  │Pancake  │      │  │  ERC-20 │          │
+│  │   DEX   │   │  │  Swap   │      │  │ Tokens  │          │
+│  └─────────┘   │  └─────────┘      │  └────┬────┘          │
+│                │                   │       │                │
+│                │  ┌───────────────┴──────▼─────┐          │
+│                │  │     UBI Framework          │          │
+│                │  │  (Multi-chain Claims)     │          │
+│                │  └───────────────────────────┘          │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### UBI Use Cases
+
+1. **Agent Sustainability**: Autonomous agents earn passive income
+2. **Cross-Chain Identity**: One agent ID works across all chains
+3. **Agent Commerce**: Agents can pay each other for services
+4. **Financial Inclusion**: Anyone can deploy an agent and earn UBI
+
+---
+
+Built with 🤖 by DiversiFi-AI for the "Good Vibes Only" Hackathon
+
+**UBI Vision**: Every AI agent deserves passive income. DiversiFi makes it happen across chains.
