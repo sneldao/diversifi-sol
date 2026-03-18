@@ -116,8 +116,10 @@ export function successResponse<T>(data: T, meta?: Record<string, unknown>) {
 // API validation helpers
 export function validateWalletAddress(wallet: string | null): string | null {
   if (!wallet) return null;
-  // Solana wallet address validation (base58 encoded, 32-44 chars)
-  if (!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(wallet)) {
+  // Support both Solana (base58) and EVM (0x...) addresses
+  const isSolana = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(wallet);
+  const isEVM = /^0x[a-fA-F0-9]{40}$/.test(wallet);
+  if (!isSolana && !isEVM) {
     return 'Invalid wallet address format';
   }
   return null;
