@@ -151,7 +151,7 @@ export default function Home() {
               <div className="flex items-center gap-4">
                 {/* Connection Status */}
                 <AnimatePresence mode="wait">
-                  {connected ? (
+                  {connected || guardianLaunched ? (
                     <motion.div
                       key="connected"
                       initial={{ opacity: 0, scale: 0.9 }}
@@ -161,21 +161,34 @@ export default function Home() {
                     >
                       <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                       <span className="text-emerald-400 text-sm font-mono">
-                        {walletAddress?.slice(0, 4)}...{walletAddress?.slice(-4)}
+                        {walletAddress ? `${walletAddress.slice(0, 4)}...${walletAddress.slice(-4)}` : 'Demo Mode'}
                       </span>
                     </motion.div>
                   ) : (
-                    <motion.button
-                      key="connect"
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                      onClick={handleLaunchGuardian}
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/30 text-emerald-400 text-sm font-medium transition-colors"
-                    >
-                      <Wallet className="w-4 h-4" />
-                      Connect Wallet
-                    </motion.button>
+                    <div className="flex items-center gap-2">
+                      <motion.button
+                        key="demo"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        onClick={() => { setGuardianLaunched(true); setGuardianData({ portfolioValue: 12450, bestApy: 4.5, solPrice: 198.5, assetsTracked: 4, healthScore: 84, walletAddress: '0x742d...fAb1', guardianId: 'df-demo-001', deployedAt: new Date().toISOString() }); }}
+                        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/30 text-cyan-400 text-sm font-medium transition-colors"
+                      >
+                        <Sparkles className="w-4 h-4" />
+                        Try Demo
+                      </motion.button>
+                      <motion.button
+                        key="connect"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        onClick={handleLaunchGuardian}
+                        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/30 text-emerald-400 text-sm font-medium transition-colors"
+                      >
+                        <Wallet className="w-4 h-4" />
+                        Connect Wallet
+                      </motion.button>
+                    </div>
                   )}
                 </AnimatePresence>
                 
