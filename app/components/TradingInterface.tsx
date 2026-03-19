@@ -347,7 +347,7 @@ export default function TradingInterface() {
       </div>
 
       {/* Real Portfolio Display */}
-      {portfolio.length > 0 && (
+      {portfolio.length > 0 ? (
         <div className="bg-slate-900 rounded-2xl p-4 border border-slate-800">
           <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
             <Wallet className="w-4 h-4 text-emerald-400" />
@@ -362,6 +362,18 @@ export default function TradingInterface() {
             ))}
           </div>
           <p className="text-slate-500 text-xs mt-2 font-mono">{DEMO_WALLET.slice(0, 10)}...{DEMO_WALLET.slice(-8)}</p>
+        </div>
+      ) : (
+        <div className="bg-slate-900 rounded-2xl p-4 border border-slate-800">
+          <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
+            <Wallet className="w-4 h-4 text-yellow-400" />
+            Demo Wallet (No Funds)
+          </h4>
+          <p className="text-slate-400 text-sm mb-3">This demo wallet has no Base tokens. Connect your wallet to trade.</p>
+          <p className="text-slate-500 text-xs font-mono">{DEMO_WALLET.slice(0, 10)}...{DEMO_WALLET.slice(-8)}</p>
+          <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+            <p className="text-yellow-400 text-sm">💡 Tip: Swap quotes work with any amount for testing</p>
+          </div>
         </div>
       )}
       {/* Trading Interface */}
