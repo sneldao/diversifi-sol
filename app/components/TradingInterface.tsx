@@ -25,11 +25,31 @@ interface TradeHistory {
   txHash?: string;
 }
 
-// Demo trades for showcase
+// Demo trades for showcase - DiversiFi executing trades autonomously
 const DEMO_TRADES: TradeHistory[] = [
   {
     id: '1',
+    timestamp: new Date(Date.now() - 1800000).toISOString(),
+    fromToken: 'USDC',
+    toToken: 'ETH',
+    amountIn: 750,
+    amountOut: 0.234,
+    status: 'executed',
+    txHash: '0x7a3f...8c21'
+  },
+  {
+    id: '2',
     timestamp: new Date(Date.now() - 3600000).toISOString(),
+    fromToken: 'ETH',
+    toToken: 'DEGEN',
+    amountIn: 0.15,
+    amountOut: 6850,
+    status: 'executed',
+    txHash: '0x9b2e...4d17'
+  },
+  {
+    id: '3', 
+    timestamp: new Date(Date.now() - 7200000).toISOString(),
     fromToken: 'USDC',
     toToken: 'ETH',
     amountIn: 500,
@@ -38,8 +58,8 @@ const DEMO_TRADES: TradeHistory[] = [
     txHash: '0x1234...5678'
   },
   {
-    id: '2', 
-    timestamp: new Date(Date.now() - 7200000).toISOString(),
+    id: '4',
+    timestamp: new Date(Date.now() - 10800000).toISOString(),
     fromToken: 'ETH',
     toToken: 'DEGEN',
     amountIn: 0.1,
@@ -48,14 +68,34 @@ const DEMO_TRADES: TradeHistory[] = [
     txHash: '0xabcd...efgh'
   },
   {
-    id: '3',
-    timestamp: new Date(Date.now() - 10800000).toISOString(),
+    id: '5',
+    timestamp: new Date(Date.now() - 14400000).toISOString(),
     fromToken: 'USDC',
     toToken: 'ETH',
     amountIn: 250,
     amountOut: 0.078,
     status: 'executed',
     txHash: '0x9876...5432'
+  },
+  {
+    id: '6',
+    timestamp: new Date(Date.now() - 18000000).toISOString(),
+    fromToken: 'DEGEN',
+    toToken: 'ETH',
+    amountIn: 2000,
+    amountOut: 0.042,
+    status: 'executed',
+    txHash: '0xdef0...1234'
+  },
+  {
+    id: '7',
+    timestamp: new Date(Date.now() - 21600000).toISOString(),
+    fromToken: 'USDC',
+    toToken: 'cbBTC',
+    amountIn: 1000,
+    amountOut: 0.0117,
+    status: 'executed',
+    txHash: '0x5678...90ab'
   }
 ];
 
