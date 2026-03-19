@@ -220,6 +220,72 @@ export async function GET(request: NextRequest) {
         { type: 'price', token: 'ETH', condition: '>3500', triggered: false }
       ],
       lastScan: new Date().toISOString()
+    },
+    risk: {
+      portfolioVaR: { '1d': 2.4, '7d': 8.7, '30d': 18.2 },
+      maxDrawdown: { '7d': -3.2, '30d': -8.5, '1y': -22.4 },
+      sharpeRatio: 2.1,
+      beta: 0.85,
+      volatility: 'medium',
+      riskScore: 42,
+      exposure: {
+        '1h': { long: 64.3, short: 0, stable: 35.7 },
+        '1d': { long: 70, short: 5, stable: 25 },
+        '1w': { long: 55, short: 10, stable: 35 }
+      },
+      correlationMatrix: {
+        'ETH-USDC': -0.12, 'ETH-DEGEN': 0.78, 'ETH-cbBTC': 0.92,
+        'USDC-DEGEN': -0.05, 'USDC-cbBTC': -0.08,
+        'DEGEN-cbBTC': 0.65
+      },
+      stressTest: {
+        'eth_drop_20': { portfolioImpact: -12.8, recommendation: 'Reduce ETH exposure' },
+        'market_crash': { portfolioImpact: -18.5, recommendation: 'Increase stablecoin allocation' },
+        'gas_spike': { portfolioImpact: -2.1, recommendation: 'Use Base for lower fees' }
+      },
+      timestamp: new Date().toISOString()
+    },
+    backtest: {
+      strategy: 'balanced-growth',
+      period: '90d',
+      initialCapital: 10000,
+      finalCapital: 12450,
+      return: { absolute: 2450, percentage: 24.5 },
+      benchmarks: { eth: 18.2, sp500: 12.4 },
+      alpha: 6.3,
+      metrics: {
+        totalTrades: 47,
+        winRate: 68,
+        avgProfit: 52,
+        avgLoss: -28,
+        largestWin: 185,
+        largestLoss: -45,
+        profitFactor: 2.1,
+        calmarRatio: 1.8
+      },
+      monthly: [
+        { month: 'Jan', return: 8.2, trades: 15 },
+        { month: 'Feb', return: 6.5, trades: 12 },
+        { month: 'Mar', return: 9.8, trades: 20 }
+      ],
+      timestamp: new Date().toISOString()
+    },
+    health: {
+      score: 84,
+      grade: 'A',
+      checks: {
+        diversification: { score: 82, status: 'good', message: 'Well distributed across 4 assets' },
+        concentration: { score: 78, status: 'warning', message: 'ETH at 64.3% - consider rebalancing' },
+        yield: { score: 65, status: 'warning', message: '$2000 USDC not earning yield' },
+        risk: { score: 89, status: 'excellent', message: 'Low volatility, good Sharpe ratio' },
+        gas: { score: 92, status: 'excellent', message: 'Using Base - low fees' }
+      },
+      improvements: [
+        { action: 'Rebalance ETH', impact: '+3 score', effort: 'low' },
+        { action: 'Move USDC to Aave', impact: '+5 score', effort: 'low' },
+        { action: 'Add stablecoin buffer', impact: '+4 score', effort: 'medium' }
+      ],
+      nextReview: new Date(Date.now() + 86400000).toISOString()
     }
   };
   
