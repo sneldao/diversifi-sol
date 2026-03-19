@@ -4,6 +4,7 @@ import { useState, useEffect, lazy, Suspense } from 'react';
 import { Shield, TrendingUp, Github, Globe, Sparkles, ChevronRight, Wallet, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import TradingInterface from './components/TradingInterface';
 
 const Dashboard = lazy(() => import('./components/Dashboard').then(mod => ({ default: mod.Dashboard })));
 const PageLoading = () => (
@@ -378,7 +379,14 @@ export default function Home() {
                   </motion.div>
                 )}
               </motion.div>
-            </div>            {/* Getting Started */}
+            </div>
+
+            {/* Trading Interface - LIVE Demo */}
+            <div className="mb-12">
+              <TradingInterface />
+            </div>
+
+            {/* Getting Started */}
             {!guardianLaunched && !connected && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
