@@ -213,6 +213,25 @@ export default function TradingInterface() {
 
   return (
     <div className="space-y-6">
+      {/* LIVE Autonomous Trading Banner */}
+      <div className="bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 border border-emerald-500/30 rounded-2xl p-4">
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <div className="w-3 h-3 rounded-full bg-emerald-400"></div>
+              <div className="absolute inset-0 w-3 h-3 rounded-full bg-emerald-400 animate-ping opacity-75"></div>
+            </div>
+            <div>
+              <p className="text-white font-semibold">🤖 DiversiFi Autonomous Trading Active</p>
+              <p className="text-emerald-400 text-sm">7 trades executed today • $2,847 volume</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-slate-400 text-sm">Chain:</span>
+            <span className="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-sm font-medium">Base</span>
+          </div>
+        </div>
+      </div>
       {/* Trading Interface */}
       <div className="bg-slate-900 rounded-2xl p-6 border border-slate-800">
         <div className="flex items-center gap-2 mb-4">
