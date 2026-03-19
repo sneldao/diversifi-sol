@@ -1,14 +1,14 @@
 // lib/tempo.ts - Tempo stablecoin payments for DiversiFi
 // Using viem for Tempo chain transactions
 
-import { createWalletClient, http, parseEther, parseUnits } from 'viem';
+import { createWalletClient, http, parseUnits } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 
 // Tempo testnet chain
 export const tempoChain = {
   id: 3301, // Tempo testnet
-  name: 'Tempo',
-  nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+  name: 'Tempo Testnet',
+  nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
   rpcUrls: {
     default: { http: ['https://rpc.testnet.tempo.xyz'] },
     public: { http: ['https://rpc.testnet.tempo.xyz'] },
@@ -19,12 +19,12 @@ export const tempoChain = {
   testnet: true,
 } as const;
 
-// USDC on Tempo (example TIP-20 token)
+// USDC on Tempo testnet
 export const USDC_TEMPO = '0x20c0000000000000000000000000000000000001';
 
-// Create Tempo client with private key
-export function createTempoClient(privateKey: `0x${string}`) {
-  const account = privateKeyToAccount(privateKey);
+// Create Tempo wallet client
+export function createTempoWalletClient(privateKeyHex: string) {
+  const account = privateKeyToAccount(privateKeyHex as `0x${string}`);
   
   return createWalletClient({
     account,
@@ -33,67 +33,60 @@ export function createTempoClient(privateKey: `0x${string}`) {
   });
 }
 
-// Pay for a transaction with stablecoins (feeToken)
-export async function sendStablecoinTransaction({
-  to,
-  data = '0x',
-  value = 0n,
-  feeToken = USDC_TEMPO,
+// Transfer USDC (TIP-20 token) on Tempo - pay fees with stablecoins too!
+export async function transferUSDC({
   privateKey,
+  to,
+  amountUSD, // e.g., 0.05 for $0.05
+  feeToken = USDC_TEMPO, // Pay fees in USDC too!
 }: {
-  to: `0x${string}`;
-  data?: `0x${string}`;
-  value?: bigint;
-  feeToken?: `0x${string}`;
-  privateKey: `0x${string}`;
+  privateKey: string;
+  to: string;
+  amountUSD: number;
+  feeToken?: string;
 }) {
-  const client = createTempoClient(privateKey);
+  const client = createTempoWalletClient(privateKey);
   
-  const hash = await client.sendTransaction({
-    to,
-    data,
-    value,
-    // @ts-ignore - Tempo-specific field
-    feeToken,
-    // @ts-ignore - Tempo-specific field  
-    feePayer: undefined, // Set to enable fee sponsorship
+  // Transfer USDC (6 decimals)
+  const amountWei = parseUnits(amountUSD.toString() as `${number}`, 6);
+  
+  const { transactionHash } = await client.token.transferSync({
+    amount: amountWei,
+    to: to as `0x${string}`,
+    token: feeToken,
+    // Pay fees in the same token (USDC) - no ETH needed!
+    feeToken: feeToken,
   });
   
-  return hash;
+  return {
+    txHash: transactionHash,
+    amount: amountUSD,
+    token: 'USDC',
+    chain: 'tempo-testnet',
+  };
 }
 
-// Example: Pay for DiversiFi premium analysis ($0.05 USDC)
-export async function payForPremium({
-  userPrivateKey,
-  amount = 0.05, // $0.05
-}: {
-  userPrivateKey: `0x${string}`;
-  amount?: number;
-}) {
-  // Convert $0.05 to USDC (6 decimals)
-  const amountWei = parseUnits(amount.toString() as `${number}`, 6);
+// Get USDC balance on Tempo
+export async function getUSDCBalance(address: string, privateKey: string) {
+  const client = createTempoWalletClient(privateKey);
   
-  // In production, this would be the DiversiFi treasury address
-  const recipient = process.env.MPP_RECIPIENT as `0x${string}` || '0x742d35Cc6634C0532925a3b844Bc9e7595f0fAb1';
-  
-  const hash = await sendStablecoinTransaction({
-    to: recipient,
-    data: '0x', // Simple transfer
-    value: amountWei,
-    feeToken: USDC_TEMPO,
-    privateKey: userPrivateKey,
+  const balance = await client.readContract({
+    address: USDC_TEMPO,
+    abi: ['function balanceOf(address) view returns (uint256)'],
+    functionName: 'balanceOf',
+    args: [address as `0x${string}`],
   });
   
-  return hash;
-}
-
-// Get Tempo balance
-export async function getTempoBalance(address: `0x${string}`) {
-  const client = createWalletClient({
-    chain: tempoChain,
-    transport: http('https://rpc.testnet.tempo.xyz'),
-  });
-  
-  const balance = await client.getBalance({ address });
   return balance;
 }
+
+// Example usage for DiversiFi premium ($0.05):
+/*
+const result = await transferUSDC({
+  privateKey: userPrivateKey,
+  to: '0x742d35Cc6634C0532925a3b844Bc9e7595f0fAb1', // DiversiFi treasury
+  amountUSD: 0.05, // $0.05 for premium analysis
+  feeToken: USDC_TEMPO, // Pay gas in USDC too!
+});
+console.log('Paid:', result.txHash);
+*/
