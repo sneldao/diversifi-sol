@@ -171,6 +171,55 @@ export async function GET(request: NextRequest) {
         { trigger: 'USDC > 1000', action: 'move_to_aave', enabled: true },
         { trigger: 'Gas < 10 gwei', action: 'execute_queued', enabled: true }
       ]
+    },
+    strategy: {
+      active: 'balanced-growth',
+      backtest: {
+        '30d': { return: 12.4, risk: 'medium', sharpe: 1.8 },
+        '90d': { return: 38.7, risk: 'medium', sharpe: 2.1 },
+        '1y': { return: 156.2, risk: 'medium-high', sharpe: 2.4 }
+      },
+      strategies: [
+        { name: 'conservative', allocation: { stable: 60, bluechip: 30, alt: 10 }, apy: 6.5 },
+        { name: 'balanced-growth', allocation: { stable: 30, bluechip: 50, alt: 20 }, apy: 14.2 },
+        { name: 'aggressive', allocation: { stable: 10, bluechip: 40, alt: 50 }, apy: 28.9 },
+        { name: 'yield-farmer', allocation: { stable: 20, bluechip: 20, yield: 60 }, apy: 45.6 }
+      ],
+      rebalanceThreshold: 5,
+      lastRebalance: new Date(Date.now() - 86400000).toISOString(),
+      nextRebalance: new Date(Date.now() + 86400000).toISOString()
+    },
+    learn: {
+      status: 'training',
+      model: 'DiversiFi-ML-v2',
+      progress: 78,
+      datasets: [
+        { name: 'on-chain-metrics', samples: 1250000, accuracy: 0.84 },
+        { name: 'social-sentiment', samples: 890000, accuracy: 0.76 },
+        { name: 'technical-analysis', samples: 420000, accuracy: 0.82 },
+        { name: 'macro-indicators', samples: 15000, accuracy: 0.71 }
+      ],
+      lastUpdate: new Date(Date.now() - 3600000).toISOString(),
+      improvements: [
+        'Improved rebalancing accuracy by 12%',
+        'Reduced false signals by 23%',
+        'Added Base chain support'
+      ],
+      nextTraining: new Date(Date.now() + 43200000).toISOString()
+    },
+    signals: {
+      active: true,
+      watchlist: [
+        { token: 'ETH', signals: ['moving_average_bullish', 'volume_increasing'], strength: 72 },
+        { token: 'DEGEN', signals: ['social_spike', 'momentum_build'], strength: 85 },
+        { token: 'cbBTC', signals: ['correlation_break', 'arbitrage_opp'], strength: 45 }
+      ],
+      alerts: [
+        { type: 'rebalance', token: 'ETH', condition: '>65%', triggered: true, timestamp: new Date(Date.now() - 3600000).toISOString() },
+        { type: 'yield', token: 'USDC', condition: '>1000', triggered: false },
+        { type: 'price', token: 'ETH', condition: '>3500', triggered: false }
+      ],
+      lastScan: new Date().toISOString()
     }
   };
   
@@ -282,6 +331,39 @@ export async function POST(request: NextRequest) {
         ],
         requiresApproval: false,
         autoExecute: true
+      },
+      strategy: {
+        decision: 'approved',
+        currentStrategy: 'balanced-growth',
+        allocation: { stable: 30, bluechip: 50, alt: 20 },
+        rebalanceThreshold: 5,
+        estimatedApy: 14.2,
+        autoRebalance: true,
+        riskLevel: 'medium'
+      },
+      learn: {
+        decision: 'approved',
+        model: 'DiversiFi-ML-v2',
+        training: {
+          status: 'in_progress',
+          progress: 78,
+          eta: '45 minutes',
+          datasets: 4,
+          samples: 2575000
+        },
+        features: [
+          'on-chain-metrics',
+          'social-sentiment',
+          'technical-analysis',
+          'macro-indicators'
+        ]
+      },
+      signals: {
+        decision: 'approved',
+        watchlist: ['ETH', 'DEGEN', 'cbBTC', 'USDC'],
+        alertChannels: ['push', 'telegram'],
+        scanInterval: '5 minutes',
+        activeAlerts: 3
       }
     };
     
