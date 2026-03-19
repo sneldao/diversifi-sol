@@ -1,12 +1,49 @@
 # DiversiFi - Autonomous Wealth Guardian 🦞
 
-**Multi-chain portfolio management + Universal Basic Income for AI Agents**
+**Base Autonomous Trading Agent - Built for Synthesis Hackathon**
 
-![DiversiFi Dashboard](https://diversifi-sol.vercel.app)
+![DiversiFi Dashboard](https://diversifi-temp.vercel.app)
 
-## 🌟 Overview
+## 🌟 Synthesis Hackathon - $5K Bounty Target
 
-DiversiFi is an autonomous agent that manages diversified portfolios across multiple blockchains AND enables AI agents to claim Universal Basic Income (UBI) across chains. Built for the "Good Vibes Only" hackathon.
+DiversiFi is an **autonomous trading agent** for **Base blockchain** that manages diversified portfolios with AI-driven rebalancing, risk management, and yield optimization.
+
+### Key Features (Synthesis)
+
+1. **Base Chain Native** - Full integration with Base RPC & portfolio API
+2. **Autonomous Rebalancing** - AI-driven portfolio optimization
+3. **Risk Management** - VaR, max drawdown, stress testing
+4. **Backtesting** - Historical performance analysis
+5. **Yield Optimization** - Aave integration for stablecoin yields
+6. **Human Guardrails** - Large transactions require approval
+
+### 🎮 Live Demo (Try These)
+
+```
+# Base Autonomous Trading Agent Demo
+GET https://diversifi-temp.vercel.app/api/agent/demo
+
+# Portfolio Status
+GET https://diversifi-temp.vercel.app/api/agent/demo?action=status
+
+# AI Analysis
+GET https://diversifi-temp.vercel.app/api/agent/demo?action=analyze
+
+# Risk Assessment
+GET https://diversifi-temp.vercel.app/api/agent/demo?action=risk
+
+# Backtest Results
+GET https://diversifi-temp.vercel.app/api/agent/demo?action=backtest
+
+# Portfolio Health Score
+GET https://diversifi-temp.vercel.app/api/agent/demo?action=health
+
+# ML Predictions
+GET https://diversifi-temp.vercel.app/api/agent/demo?action=predict
+
+# Execute Trades
+GET https://diversifi-temp.vercel.app/api/agent/demo?action=execute
+```
 
 ### Key Features
 
