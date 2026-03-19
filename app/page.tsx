@@ -380,7 +380,7 @@ export default function Home() {
                     </div>
                     <div>
                       <h3 className="text-white font-semibold text-sm">1. Connect Wallet</h3>
-                      <p className="text-slate-400 text-xs">Link your Solana wallet (Phantom, Solflare, or Torus)</p>
+                      <p className="text-slate-400 text-xs">Link your Base wallet (MetaMask, Coinbase Wallet)</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4 p-4 rounded-xl bg-slate-800/30 border border-slate-700/50">
@@ -425,7 +425,7 @@ export default function Home() {
                       <span className="text-2xl">🔍</span>
                     </div>
                     <h3 className="text-white font-bold mb-2">1. Scan Portfolio</h3>
-                    <p className="text-slate-400 text-sm">Analyzes SPL tokens, NFTs, and SOL in real-time using Helius RPC.</p>
+                    <p className="text-slate-400 text-sm">Analyzes ERC-20 tokens and native assets on Base in real-time.</p>
                   </div>
                   <div className="p-6 rounded-xl bg-slate-800/50 border border-cyan-500/20">
                     <div className="w-12 h-12 rounded-xl bg-cyan-500/20 flex items-center justify-center mb-4">
@@ -515,10 +515,10 @@ export default function Home() {
                 <span className="text-slate-400">Helius RPC</span>
                 <span className="text-slate-400">Jupiter</span>
                 <span className="text-slate-400">Birdeye API</span>
-                <span className="text-slate-400">Solana</span>
+                <span className="text-slate-400">Base</span>
               </div>
               <div className="text-center mt-4">
-                <span className="text-slate-500 text-xs">Built for Colosseum AI Hackathon • February 2026</span>
+                <span className="text-slate-500 text-xs">Synthesis Hackathon • March 2026</span>
               </div>
               <div className="text-center mt-2">
                 <span className="text-slate-500 text-xs">© 2026 DiversiFi • Open Source</span>
