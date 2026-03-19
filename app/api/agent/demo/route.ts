@@ -286,6 +286,43 @@ export async function GET(request: NextRequest) {
         { action: 'Add stablecoin buffer', impact: '+4 score', effort: 'medium' }
       ],
       nextReview: new Date(Date.now() + 86400000).toISOString()
+    },
+    compound: {
+      status: 'active',
+      strategy: 'auto-yield-compound',
+      pools: [
+        { 
+          protocol: 'Aave V3', 
+          token: 'USDC', 
+          balance: 2000, 
+          apy: 4.5, 
+          autoCompound: true, 
+          compoundsPerDay: 4 
+        },
+        { 
+          protocol: 'Compound', 
+          token: 'ETH', 
+          balance: 0.5, 
+          apy: 3.2, 
+          autoCompound: true, 
+          compoundsPerDay: 1 
+        },
+        { 
+          protocol: 'Yearn', 
+          token: 'cbBTC', 
+          balance: 0.055, 
+          apy: 8.7, 
+          autoCompound: true, 
+          compoundsPerDay: 2 
+        }
+      ],
+      totalYieldGenerated: 156.80,
+      projectedAnnualYield: 892.50,
+      compoundFrequency: 'continuous',
+      lastCompound: new Date(Date.now() - 3600000).toISOString(),
+      nextCompound: new Date(Date.now() + 21600000).toISOString(),
+      gasSpent: 0.012,
+      netYieldAfterGas: 880.50
     }
   };
   
@@ -430,6 +467,18 @@ export async function POST(request: NextRequest) {
         alertChannels: ['push', 'telegram'],
         scanInterval: '5 minutes',
         activeAlerts: 3
+      },
+      compound: {
+        decision: 'approved',
+        action: 'auto_yield_compound',
+        protocols: ['Aave V3', 'Compound', 'Yearn'],
+        tokens: ['USDC', 'ETH', 'cbBTC'],
+        frequency: 'continuous',
+        gasThreshold: '15 gwei',
+        autoCompound: true,
+        requiresApproval: false,
+        estimatedYield: 892.50,
+        period: '12 months'
       }
     };
     
