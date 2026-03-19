@@ -365,6 +365,36 @@ export async function GET(request: NextRequest) {
         deadline: '2026-03-22',
         status: 'ready'
       }
+    },
+    gas: {
+      chain: 'base',
+      currentGas: {
+        standard: 0.001,
+        fast: 0.002,
+        instant: 0.005
+      },
+      usdCost: {
+        standard: 0.32,
+        fast: 0.64,
+        instant: 1.60
+      },
+      savings: {
+        vsEthereum: 95,
+        vsArbitrum: 42,
+        vsOptimism: 38
+      },
+      optimization: {
+        mode: 'base',
+        batchEnabled: true,
+        l2Enabled: true,
+        estimatedMonthlySavings: 12.50,
+        tip: 'Using Base for all transactions saves 95% vs Ethereum mainnet'
+      },
+      recentTransactions: [
+        { type: 'swap', gas: 0.0012, timestamp: new Date(Date.now() - 3600000).toISOString() },
+        { type: 'bridge', gas: 0.0015, timestamp: new Date(Date.now() - 86400000).toISOString() },
+        { type: 'yield', gas: 0.0008, timestamp: new Date(Date.now() - 172800000).toISOString() }
+      ]
     }
   };
   
