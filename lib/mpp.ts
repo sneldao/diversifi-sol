@@ -5,6 +5,7 @@
 // Using Tempo stablecoin payments on Tempo blockchain
 
 import { Mppx, tempo, Response } from 'mppx/server';
+import { Proxy, openai } from 'mppx/proxy';
 
 // Create MPP server handler for payment-gated endpoints
 export function createMppServer() {
@@ -107,3 +108,38 @@ export async function makePaidRequest(
   
   return response;
 }
+
+// MPP Proxy - Paid API proxy for DiversiFi AI services
+// This allows DiversiFi to offer paid AI-powered portfolio analysis
+// Using OpenAI and other AI services behind MPP payments
+
+export function createMppProxy() {
+  const mppx = createMppServer();
+
+  const proxy = Proxy.create({
+    description: 'DiversiFi AI Agent Services - Paid API Proxy',
+    title: 'DiversiFi Agent Services',
+    services: [
+      openai({
+        apiKey: process.env.OPENAI_API_KEY || '',
+        routes: {
+          // Premium: Paid AI analysis
+          'POST /v1/chat/completions': mppx.charge({ amount: '0.02' }), // $0.02 per request
+          // Free: List available models
+          'GET /v1/models': true,
+        },
+      }),
+      // Could add Anthropic, Stripe, etc.
+    ],
+  });
+
+  return proxy;
+}
+
+// Export the proxy handlers
+export const proxyHandlers = {
+  // For Bun/Deno/Next.js
+  fetch: createMppProxy()?.fetch,
+  // For Node.js
+  listener: createMppProxy()?.listener,
+};
