@@ -85,6 +85,34 @@ export async function GET(request: NextRequest) {
         slippage: 0.1,
         timestamp: new Date(Date.now() - 3600000).toISOString()
       }
+    },
+    bridge: {
+      recentBridge: {
+        fromChain: 'ethereum',
+        toChain: 'base',
+        token: 'ETH',
+        amount: 1.0,
+        bridge: 'LayerZero',
+        status: 'completed',
+        timestamp: new Date(Date.now() - 86400000).toISOString()
+      },
+      routes: [
+        { bridge: 'LayerZero', time: '5min', fee: 0.001 },
+        { bridge: 'Stargate', time: '3min', fee: 0.0015 }
+      ]
+    },
+    ubi: {
+      claimable: true,
+      pendingClaims: [
+        { protocol: 'ProofOfHumanity', amount: 25.50, token: 'USDC' },
+        { protocol: 'Gitcoin', amount: 10.00, token: 'USDC' }
+      ],
+      lastClaim: {
+        protocol: 'ImpactMarket',
+        amount: 45.00,
+        token: 'PUSDC',
+        timestamp: new Date(Date.now() - 172800000).toISOString()
+      }
     }
   };
   
@@ -141,6 +169,29 @@ export async function POST(request: NextRequest) {
         token: 'ETH',
         threshold: 3500,
         channels: ['push', 'telegram']
+      },
+      bridge: {
+        decision: 'approved',
+        reason: 'Best route via LayerZero - fastest & cheapest',
+        action: 'bridge 0.5 ETH from Ethereum to Base',
+        sourceChain: 'ethereum',
+        destChain: 'base',
+        amount: 0.5,
+        bridge: 'LayerZero',
+        estimatedTime: '5 minutes',
+        fee: 0.0008,
+        gasEstimate: 0.001,
+        requiresApproval: false
+      },
+      ubi_claim: {
+        decision: 'approved',
+        reason: 'ProofOfHumanity claim ready',
+        protocol: 'ProofOfHumanity',
+        amount: 25.50,
+        token: 'USDC',
+        gasEstimate: 0.002,
+        requiresApproval: false,
+        autoClaimEnabled: true
       }
     };
     
