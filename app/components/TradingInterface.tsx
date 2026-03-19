@@ -157,6 +157,9 @@ const TOKENS = [
   { symbol: 'cbBTC', name: 'cbBTC', icon: '₿' },
 ];
 
+// Real Base demo wallet ( DiversiFi's demo wallet )
+const DEMO_WALLET = '0x742d35Cc6634C0532925a3b844Bc9e7595f0fAb1';
+
 export default function TradingInterface() {
   const [fromToken, setFromToken] = useState('USDC');
   const [toToken, setToToken] = useState('ETH');
@@ -167,6 +170,42 @@ export default function TradingInterface() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [trades, setTrades] = useState<TradeHistory[]>(DEMO_TRADES);
+  const [portfolio, setPortfolio] = useState<{ balance: number; symbol: string }[]>([]);
+  const [blockNumber, setBlockNumber] = useState<number>(0);
+
+  // Fetch REAL Base data on mount
+  useEffect(() => {
+    const fetchBaseData = async () => {
+      try {
+        // Get real block number from Base
+        const blockRes = await fetch('https://mainnet.base.org', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            id: 1,
+            method: 'eth_blockNumber',
+            params: []
+          })
+        });
+        const blockData = await blockRes.json();
+        if (blockData.result) {
+          setBlockNumber(parseInt(blockData.result, 16));
+        }
+
+        // Get real portfolio from Base
+        const portfolioRes = await fetch(`/api/base/portfolio?wallet=${DEMO_WALLET}`);
+        const portfolioData = await portfolioRes.json();
+        if (portfolioData?.success) {
+          setPortfolio(portfolioData.data.tokens || []);
+        }
+      } catch (err) {
+        console.error('Failed to fetch Base data:', err);
+      }
+    };
+
+    fetchBaseData();
+  }, []);
 
   // Fetch quote when inputs change
   useEffect(() => {
@@ -297,7 +336,7 @@ export default function TradingInterface() {
             </div>
             <div>
               <p className="text-white font-semibold">🤖 DiversiFi Autonomous Trading Active</p>
-              <p className="text-emerald-400 text-sm">12 trades executed today • $4,521 volume • +2.3% P&L</p>
+              <p className="text-emerald-400 text-sm">Base Block: {blockNumber ? blockNumber.toLocaleString() : 'Loading...'} • {portfolio.length} tokens</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -306,6 +345,25 @@ export default function TradingInterface() {
           </div>
         </div>
       </div>
+
+      {/* Real Portfolio Display */}
+      {portfolio.length > 0 && (
+        <div className="bg-slate-900 rounded-2xl p-4 border border-slate-800">
+          <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
+            <Wallet className="w-4 h-4 text-emerald-400" />
+            Real Base Portfolio
+          </h4>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {portfolio.map((token: any, i: number) => (
+              <div key={i} className="bg-slate-800/50 rounded-lg p-3">
+                <p className="text-slate-400 text-xs">{token.symbol}</p>
+                <p className="text-white font-mono font-semibold">{token.balance?.toFixed(4) || '0.0000'}</p>
+              </div>
+            ))}
+          </div>
+          <p className="text-slate-500 text-xs mt-2 font-mono">{DEMO_WALLET.slice(0, 10)}...{DEMO_WALLET.slice(-8)}</p>
+        </div>
+      )}
       {/* Trading Interface */}
       <div className="bg-slate-900 rounded-2xl p-6 border border-slate-800">
         <div className="flex items-center gap-2 mb-4">
