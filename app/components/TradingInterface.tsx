@@ -29,6 +29,36 @@ interface TradeHistory {
 const DEMO_TRADES: TradeHistory[] = [
   {
     id: '1',
+    timestamp: new Date(Date.now() - 600000).toISOString(),
+    fromToken: 'ETH',
+    toToken: 'USDC',
+    amountIn: 0.32,
+    amountOut: 1024,
+    status: 'executed',
+    txHash: '0x8f2a...b3c4'
+  },
+  {
+    id: '2',
+    timestamp: new Date(Date.now() - 900000).toISOString(),
+    fromToken: 'DEGEN',
+    toToken: 'ETH',
+    amountIn: 5000,
+    amountOut: 0.112,
+    status: 'executed',
+    txHash: '0x1a2b...3c4d'
+  },
+  {
+    id: '3',
+    timestamp: new Date(Date.now() - 1500000).toISOString(),
+    fromToken: 'USDC',
+    toToken: 'cbBTC',
+    amountIn: 800,
+    amountOut: 0.0094,
+    status: 'executed',
+    txHash: '0x5e6f...7a8b'
+  },
+  {
+    id: '4',
     timestamp: new Date(Date.now() - 1800000).toISOString(),
     fromToken: 'USDC',
     toToken: 'ETH',
@@ -38,7 +68,27 @@ const DEMO_TRADES: TradeHistory[] = [
     txHash: '0x7a3f...8c21'
   },
   {
-    id: '2',
+    id: '5',
+    timestamp: new Date(Date.now() - 2400000).toISOString(),
+    fromToken: 'ETH',
+    toToken: 'DEGEN',
+    amountIn: 0.2,
+    amountOut: 9100,
+    status: 'executed',
+    txHash: '0x9c1d...2e3f'
+  },
+  {
+    id: '6',
+    timestamp: new Date(Date.now() - 3000000).toISOString(),
+    fromToken: 'USDC',
+    toToken: 'ETH',
+    amountIn: 500,
+    amountOut: 0.156,
+    status: 'executed',
+    txHash: '0x4b5e...6f7a'
+  },
+  {
+    id: '7',
     timestamp: new Date(Date.now() - 3600000).toISOString(),
     fromToken: 'ETH',
     toToken: 'DEGEN',
@@ -48,54 +98,54 @@ const DEMO_TRADES: TradeHistory[] = [
     txHash: '0x9b2e...4d17'
   },
   {
-    id: '3', 
-    timestamp: new Date(Date.now() - 7200000).toISOString(),
-    fromToken: 'USDC',
-    toToken: 'ETH',
-    amountIn: 500,
-    amountOut: 0.156,
-    status: 'executed',
-    txHash: '0x1234...5678'
-  },
-  {
-    id: '4',
-    timestamp: new Date(Date.now() - 10800000).toISOString(),
-    fromToken: 'ETH',
-    toToken: 'DEGEN',
-    amountIn: 0.1,
-    amountOut: 4500,
-    status: 'executed',
-    txHash: '0xabcd...efgh'
-  },
-  {
-    id: '5',
-    timestamp: new Date(Date.now() - 14400000).toISOString(),
-    fromToken: 'USDC',
-    toToken: 'ETH',
-    amountIn: 250,
-    amountOut: 0.078,
-    status: 'executed',
-    txHash: '0x9876...5432'
-  },
-  {
-    id: '6',
-    timestamp: new Date(Date.now() - 18000000).toISOString(),
+    id: '8',
+    timestamp: new Date(Date.now() - 4200000).toISOString(),
     fromToken: 'DEGEN',
-    toToken: 'ETH',
-    amountIn: 2000,
-    amountOut: 0.042,
+    toToken: 'USDC',
+    amountIn: 3000,
+    amountOut: 62.50,
     status: 'executed',
-    txHash: '0xdef0...1234'
+    txHash: '0x2c3f...5a6b'
   },
   {
-    id: '7',
-    timestamp: new Date(Date.now() - 21600000).toISOString(),
+    id: '9',
+    timestamp: new Date(Date.now() - 5400000).toISOString(),
     fromToken: 'USDC',
-    toToken: 'cbBTC',
+    toToken: 'ETH',
     amountIn: 1000,
-    amountOut: 0.0117,
+    amountOut: 0.312,
     status: 'executed',
-    txHash: '0x5678...90ab'
+    txHash: '0x7d8e...9f0a'
+  },
+  {
+    id: '10',
+    timestamp: new Date(Date.now() - 7200000).toISOString(),
+    fromToken: 'ETH',
+    toToken: 'cbBTC',
+    amountIn: 0.5,
+    amountOut: 0.0059,
+    status: 'executed',
+    txHash: '0x3a4b...5c6d'
+  },
+  {
+    id: '11',
+    timestamp: new Date(Date.now() - 9000000).toISOString(),
+    fromToken: 'USDC',
+    toToken: 'DEGEN',
+    amountIn: 400,
+    amountOut: 18000,
+    status: 'executed',
+    txHash: '0x6e7f...8a9b'
+  },
+  {
+    id: '12',
+    timestamp: new Date(Date.now() - 10800000).toISOString(),
+    fromToken: 'cbBTC',
+    toToken: 'ETH',
+    amountIn: 0.01,
+    amountOut: 3.2,
+    status: 'executed',
+    txHash: '0x1b2c...3d4e'
   }
 ];
 
@@ -213,6 +263,30 @@ export default function TradingInterface() {
 
   return (
     <div className="space-y-6">
+      {/* Portfolio Summary */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="bg-slate-900 rounded-xl p-4 border border-slate-800">
+          <p className="text-slate-400 text-xs mb-1">Portfolio Value</p>
+          <p className="text-white font-bold text-xl">$12,458</p>
+          <p className="text-emerald-400 text-xs">+2.3% today</p>
+        </div>
+        <div className="bg-slate-900 rounded-xl p-4 border border-slate-800">
+          <p className="text-slate-400 text-xs mb-1">Today's Trades</p>
+          <p className="text-white font-bold text-xl">12</p>
+          <p className="text-cyan-400 text-xs">$4,521 volume</p>
+        </div>
+        <div className="bg-slate-900 rounded-xl p-4 border border-slate-800">
+          <p className="text-slate-400 text-xs mb-1">Win Rate</p>
+          <p className="text-white font-bold text-xl">78%</p>
+          <p className="text-emerald-400 text-xs">+2.3% P&L</p>
+        </div>
+        <div className="bg-slate-900 rounded-xl p-4 border border-slate-800">
+          <p className="text-slate-400 text-xs mb-1">Gas Saved</p>
+          <p className="text-white font-bold text-xl">$47.20</p>
+          <p className="text-cyan-400 text-xs">vs manual</p>
+        </div>
+      </div>
+
       {/* LIVE Autonomous Trading Banner */}
       <div className="bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 border border-emerald-500/30 rounded-2xl p-4">
         <div className="flex items-center justify-between flex-wrap gap-3">
@@ -223,7 +297,7 @@ export default function TradingInterface() {
             </div>
             <div>
               <p className="text-white font-semibold">🤖 DiversiFi Autonomous Trading Active</p>
-              <p className="text-emerald-400 text-sm">7 trades executed today • $2,847 volume</p>
+              <p className="text-emerald-400 text-sm">12 trades executed today • $4,521 volume • +2.3% P&L</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
