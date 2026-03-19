@@ -113,6 +113,64 @@ export async function GET(request: NextRequest) {
         token: 'PUSDC',
         timestamp: new Date(Date.now() - 172800000).toISOString()
       }
+    },
+    scan: {
+      status: 'completed',
+      wallet: demoWallet,
+      scannedAt: new Date().toISOString(),
+      findings: {
+        totalValue: 12450.00,
+        gasOptimization: { savings: 12.50, recommendation: 'Use Base for lower fees' },
+        tokenAnalysis: [
+          { token: 'ETH', concentration: 64.3, risk: 'high', recommendation: 'Reduce to 60%' },
+          { token: 'USDC', yieldOpportunity: true, currentYield: 0, recommended: 'Aave' },
+          { token: 'DEGEN', volatility: 'high', sentiment: 'bullish' }
+        ],
+        arbitrageOpportunities: [
+          { pair: 'ETH/USDC', spread: 0.02, potential: 5.00 },
+          { pair: 'cbBTC/ETH', spread: 0.01, potential: 2.50 }
+        ],
+        healthCheck: {
+          score: 78,
+          issues: ['High ETH concentration', 'Low yield on USDC'],
+          recommendations: ['Rebalance ETH', 'Deploy USDC to Aave']
+        }
+      }
+    },
+    predict: {
+      model: 'DiversiFi-ML-v2',
+      predictions: {
+        '24h': { eth: { direction: 'up', confidence: 72, target: 3250 } },
+        '7d': { eth: { direction: 'up', confidence: 65, target: 3400 } },
+        '30d': { eth: { direction: 'sideways', confidence: 55, target: 3300 } }
+      },
+      factors: [
+        'On-chain metrics: Net inflow +$2.4M',
+        'Social sentiment: 68% bullish',
+        'Technical: RSI at 58 (neutral)',
+        'Macro: Fed rate expectations favorable'
+      ],
+      generatedAt: new Date().toISOString()
+    },
+    execute: {
+      type: 'autonomous',
+      status: 'ready',
+      lastExecution: {
+        action: 'rebalance',
+        timestamp: new Date(Date.now() - 7200000).toISOString(),
+        result: 'success',
+        gasUsed: 0.0021,
+        tokensSwapped: '0.5 ETH → 1625 USDC'
+      },
+      queued: [
+        { action: 'yield_optimize', status: 'pending', estimatedGain: 90 },
+        { action: 'ubi_claim', status: 'pending', amount: 25.50 }
+      ],
+      automationRules: [
+        { trigger: 'ETH > 65%', action: 'rebalance', enabled: true },
+        { trigger: 'USDC > 1000', action: 'move_to_aave', enabled: true },
+        { trigger: 'Gas < 10 gwei', action: 'execute_queued', enabled: true }
+      ]
     }
   };
   
@@ -192,6 +250,38 @@ export async function POST(request: NextRequest) {
         gasEstimate: 0.002,
         requiresApproval: false,
         autoClaimEnabled: true
+      },
+      scan: {
+        decision: 'approved',
+        action: 'full_portfolio_scan',
+        estimatedDuration: '3 seconds',
+        checks: [
+          'token_balances',
+          'allocation_analysis',
+          'yield_opportunities',
+          'risk_assessment',
+          'gas_optimization'
+        ],
+        requiresApproval: false
+      },
+      predict: {
+        decision: 'approved',
+        action: 'run_ml_prediction',
+        model: 'DiversiFi-ML-v2',
+        predictions: ['24h', '7d', '30d'],
+        factors: ['on-chain', 'social', 'technical', 'macro'],
+        requiresApproval: false
+      },
+      execute: {
+        decision: 'approved',
+        action: 'autonomous_execution',
+        rules: [
+          'ETH > 65% → rebalance',
+          'USDC > 1000 → yield_optimize',
+          'Gas < 10 gwei → execute'
+        ],
+        requiresApproval: false,
+        autoExecute: true
       }
     };
     
