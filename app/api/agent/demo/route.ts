@@ -479,6 +479,21 @@ export async function POST(request: NextRequest) {
         requiresApproval: false,
         estimatedYield: 892.50,
         period: '12 months'
+      },
+      optimize: {
+        decision: 'approved',
+        portfolio: {
+          totalValue: 12450,
+          tokens: ['ETH', 'USDC', 'DEGEN', 'cbBTC']
+        },
+        optimizations: [
+          { type: 'yield', action: 'Move USDC to Aave V3', currentApy: 0, targetApy: 4.5, annualGain: 90, risk: 'low', effort: 'low' },
+          { type: 'gas', action: 'Use Base for all transactions', currentCost: 0.008, targetCost: 0.001, monthlySavings: 12, risk: 'none', effort: 'none' },
+          { type: 'rebalance', action: 'Sell 0.5 ETH → USDC', currentAlloc: 64.3, targetAlloc: 60, rebalanceValue: 1600, risk: 'low', effort: 'low' }
+        ],
+        totalAnnualGain: 102,
+        automationEnabled: true,
+        nextReview: new Date(Date.now() + 86400000).toISOString()
       }
     };
     
