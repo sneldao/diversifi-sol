@@ -323,6 +323,48 @@ export async function GET(request: NextRequest) {
       nextCompound: new Date(Date.now() + 21600000).toISOString(),
       gasSpent: 0.012,
       netYieldAfterGas: 880.50
+    },
+    dashboard: {
+      overview: {
+        agent: 'DiversiFi-Guardian',
+        version: '2.0.0',
+        chain: 'base',
+        status: 'active',
+        uptime: '99.9%',
+        lastUpdate: new Date().toISOString()
+      },
+      portfolio: {
+        totalValue: 12450.00,
+        change24h: 2.4,
+        tokens: 4,
+        strategies: 4
+      },
+      performance: {
+        return90d: 24.5,
+        winRate: 68,
+        sharpeRatio: 2.1,
+        alpha: 6.3,
+        trades: 47
+      },
+      health: {
+        score: 84,
+        grade: 'A',
+        diversification: 82,
+        risk: 89,
+        yield: 65
+      },
+      automation: {
+        activeRules: 3,
+        queuedActions: 2,
+        lastExecution: new Date(Date.now() - 3600000).toISOString(),
+        nextScheduled: new Date(Date.now() + 21600000).toISOString()
+      },
+      synthesis: {
+        bounty: '$5,000',
+        track: 'Base Autonomous Trading Agent',
+        deadline: '2026-03-22',
+        status: 'ready'
+      }
     }
   };
   
