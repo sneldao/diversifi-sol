@@ -1,6 +1,8 @@
 # DiversiFi - Autonomous Wealth Guardian 🦞
 
-**Base Autonomous Trading Agent - Built for Synthesis Hackathon**
+**Synthesis Hackathon: "Agents that Pay" Track**
+
+> What happens when agents move your money? DiversiFi provides transparent, verifiable autonomous trading on Base with human guardrails.
 
 ![DiversiFi Dashboard](https://diversifi-temp.vercel.app)
 
